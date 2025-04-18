@@ -109,6 +109,9 @@ class RegistrationForm(FlaskForm):
         DataRequired(message='يجب تأكيد كلمة المرور'),
         EqualTo('password', message='كلمة المرور غير متطابقة')
     ])
+    admin_secret = PasswordField('كلمة سر المشرف (للمشرفين فقط)', validators=[
+        Optional()
+    ])
     role = SelectField('نوع الحساب', choices=[('student', 'طالب')], validators=[
         DataRequired(message='يجب اختيار نوع الحساب')
     ])

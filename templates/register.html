@@ -85,6 +85,20 @@
                         </div>
                         
                         <div class="mb-3 text-end">
+                            {{ form.admin_secret.label(class="form-label") }}
+                            <div class="input-group">
+                                {{ form.admin_secret(class="form-control", id="admin_secret") }}
+                                <button class="btn btn-outline-secondary" type="button" id="toggleAdminSecret">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <small class="text-muted">اتركه فارغًا إذا كنت تريد حساب طالب. أدخل كلمة سر المشرف إذا كنت تريد حساب مشرف.</small>
+                            {% for error in form.admin_secret.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="mb-3 text-end">
                             {{ form.role.label(class="form-label") }}
                             {{ form.role(class="form-select") }}
                             {% for error in form.role.errors %}
@@ -136,6 +150,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     togglePasswordVisibility('password', 'togglePassword');
     togglePasswordVisibility('password2', 'togglePassword2');
+    togglePasswordVisibility('admin_secret', 'toggleAdminSecret');
 
     // Form validation
     const form = document.getElementById('registerForm');
