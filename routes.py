@@ -1035,47 +1035,108 @@ def generate_codes_pdf(codes, video_title, with_students=False):
                         student_name = code_info.get('student', '')
                         student_paragraph = Paragraph(f"الطالب: {student_name}", student_style)
                     
-                    # إنشاء محتوى البطاقة
+                    # إنشاء محتوى البطاقة - تصميم بمربع كبير
                     if os.path.exists(teacher_image_path):
-                        # إنشاء محتوى البطاقة بصورة المستر
+                        # إنشاء محتوى البطاقة بصورة المستر في المنتصف
                         
                         # صورة المستر
                         teacher_img = Image(teacher_image_path)
-                        teacher_img.drawWidth = 4*cm  # عرض الصورة
-                        teacher_img.drawHeight = 4*cm  # ارتفاع الصورة
+                        teacher_img.drawWidth = 5*cm  # عرض الصورة أكبر
+                        teacher_img.drawHeight = 5*cm  # ارتفاع الصورة أكبر
                         
-                        # تقسيم البطاقة إلى قسمين: العنوان والمحتوى
+                        # تنسيق جديد للكود ليتم عرضه بشكل أفضل وأكبر
+                        enhanced_code_style = ParagraphStyle(
+                            'EnhancedCodeStyle',
+                            parent=styles['Normal'],
+                            alignment=TA_CENTER,
+                            fontName='Courier-Bold',
+                            fontSize=28,  # حجم أكبر للكود
+                            textColor=colors.black,
+                            leading=30,
+                            borderWidth=3,
+                            borderColor=colors.darkblue,
+                            borderPadding=12,
+                            borderRadius=8,
+                            backColor=colors.lightgrey,
+                        )
+
+                        # تنسيق الكود بشكل أفضل وأكبر
+                        code_paragraph = Paragraph(f"<b>{code_text}</b>", enhanced_code_style)
+
+                        # عنوان البطاقة مع نصوص ملونة ومزخرفة
                         header_data = [[card_title]]
                         header_table = Table(header_data, colWidths=[8.5*cm])
                         header_table.setStyle(TableStyle([
-                            ('BACKGROUND', (0, 0), (-1, -1), colors.lightblue),
+                            ('BACKGROUND', (0, 0), (-1, -1), colors.darkblue),
                             ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
                             ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
                             ('TEXTCOLOR', (0, 0), (-1, -1), colors.white),
+                            ('TOPPADDING', (0, 0), (-1, -1), 8),
+                            ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+                        ]))
+                        
+                        # إنشاء مربع كبير للبطاقة مع صورة المستر في المنتصف
+                        # مع وضع الكود في الأعلى
+
+                        # محتوى الكود
+                        code_container = Table([[code_paragraph]], colWidths=[8.5*cm])
+                        code_container.setStyle(TableStyle([
+                            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                            ('LEFTPADDING', (0, 0), (-1, -1), 0),
+                            ('RIGHTPADDING', (0, 0), (-1, -1), 0),
+                            ('TOPPADDING', (0, 0), (-1, -1), 5),
+                            ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
+                        ]))
+
+                        # محتوى الصورة
+                        image_container = Table([[teacher_img]], colWidths=[8.5*cm])
+                        image_container.setStyle(TableStyle([
+                            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                            ('TOPPADDING', (0, 0), (-1, -1), 0),
+                            ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
+                        ]))
+
+                        # معلومات إضافية
+                        info_container = Table([[info_paragraph]], colWidths=[8.5*cm])
+                        info_container.setStyle(TableStyle([
+                            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
                             ('TOPPADDING', (0, 0), (-1, -1), 5),
                             ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
                         ]))
-                        
-                        # محتوى البطاقة مع الصورة
-                        content_data = [
-                            [teacher_img, code_paragraph]
-                        ]
-                        
+
+                        # الطالب (إذا وجد)
+                        student_container = None
                         if student_paragraph:
-                            content_data.append([student_paragraph, ''])
+                            student_container = Table([[student_paragraph]], colWidths=[8.5*cm])
+                            student_container.setStyle(TableStyle([
+                                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                                ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                                ('TOPPADDING', (0, 0), (-1, -1), 0),
+                                ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
+                            ]))
                         
-                        content_data.append([info_paragraph, ''])
-                        
-                        content_table = Table(content_data, colWidths=[4.5*cm, 4*cm])
+                        # محتوى البطاقة المتكامل
+                        content_elements = [code_container, image_container, info_container]
+                        if student_container:
+                            content_elements.insert(3, student_container)
+
+                        card_content = []
+                        for element in content_elements:
+                            card_content.append([element])
+
+                        # جدول المحتوى الكامل
+                        content_table = Table(card_content, colWidths=[8.5*cm])
                         content_table.setStyle(TableStyle([
-                            ('SPAN', (0, 0), (0, -1)),  # دمج الخلايا للصورة
                             ('BACKGROUND', (0, 0), (-1, -1), colors.white),
                             ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
                             ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-                            ('TOPPADDING', (0, 0), (-1, -1), 10),  # زيادة المساحة العلوية
-                            ('BOTTOMPADDING', (0, 0), (-1, -1), 10),  # زيادة المساحة السفلية
-                            ('LEFTPADDING', (1, 0), (1, -1), 0),  # تقليل المساحة اليسرى لخلية الكود
-                            ('RIGHTPADDING', (1, 0), (1, -1), 0),  # تقليل المساحة اليمنى لخلية الكود
+                            ('TOPPADDING', (0, 0), (-1, -1), 0),
+                            ('BOTTOMPADDING', (0, 0), (-1, -1), 0),
+                            ('LEFTPADDING', (0, 0), (-1, -1), 0),
+                            ('RIGHTPADDING', (0, 0), (-1, -1), 0),
                         ]))
                         
                         # الجمع بين العنوان والمحتوى
@@ -1084,16 +1145,33 @@ def generate_codes_pdf(codes, video_title, with_students=False):
                             [content_table]
                         ]
                         
+                        # تحسين شكل البطاقة النهائي مع إطار مزخرف
                         card_table = Table(card_data, colWidths=[8.5*cm])
+                        
+                        # إضافة مظهر مزخرف للبطاقة مع إطار وألوان جذابة
+                        border_color = colors.darkblue
+                        box_color = colors.black
+                        
                         card_table.setStyle(TableStyle([
-                            ('BOX', (0, 0), (-1, -1), 2, colors.black),  # حدود أكثر سماكة
-                            ('LINEABOVE', (0, 1), (-1, 1), 1, colors.black),
+                            # إطار خارجي سميك
+                            ('BOX', (0, 0), (-1, -1), 3, box_color),
+                            
+                            # إطار داخلي بلون مختلف حول محتوى البطاقة
+                            ('BOX', (0, 1), (-1, 1), 1, border_color),
+                            
+                            # خط فاصل بين العنوان والمحتوى
+                            ('LINEABOVE', (0, 1), (-1, 1), 2, border_color),
+                            
+                            # خط في الأسفل للتزيين
+                            ('LINEBELOW', (0, -1), (-1, -1), 1, border_color),
+                            
+                            # ضبط التنسيق
                             ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
                             ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
                             ('TOPPADDING', (0, 0), (-1, -1), 0),
                             ('BOTTOMPADDING', (0, 0), (-1, -1), 0),
-                            ('LEFTPADDING', (0, 0), (-1, -1), 5),
-                            ('RIGHTPADDING', (0, 0), (-1, -1), 5),
+                            ('LEFTPADDING', (0, 0), (-1, -1), 0),
+                            ('RIGHTPADDING', (0, 0), (-1, -1), 0),
                         ]))
                         
                     else:
