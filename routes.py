@@ -806,73 +806,287 @@ def create_lecture_code(video_id):
     return render_template('admin/generate_code.html', form=form, video=video)
 
 def generate_codes_pdf(codes, video_title, with_students=False):
-    """إنشاء ملف PDF يحتوي على أكواد المحاضرات، مع إمكانية عرض أسماء الطلاب المعينين للأكواد"""
+    """
+    إنشاء ملف PDF مزخرف يحتوي على أكواد المحاضرات، مع إمكانية عرض أسماء الطلاب المعينين للأكواد
+    يتم تنسيق الأكواد في مربعات مستقلة وجميلة ليسهل قصها وتوزيعها
+    كل صفحة تحتوي على 9 أكواد فقط
+    """
     import os
-    from reportlab.lib.pagesizes import A4
+    import datetime
+    import math
+    from reportlab.lib.pagesizes import A4, landscape
     from reportlab.lib import colors
-    from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
-    from reportlab.lib.styles import getSampleStyleSheet
+    from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image, PageBreak
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.lib.units import cm, mm
     from reportlab.pdfbase import pdfmetrics
     from reportlab.pdfbase.ttfonts import TTFont
+    from reportlab.lib.enums import TA_CENTER, TA_RIGHT
 
     # تحديد مسار الملف في مجلد مؤقت
     pdf_path = 'static/temp/lecture_codes.pdf'
+    logo_path = 'static/img/logo.png'  # مسار شعار المؤسسة
 
+    # التحقق من وجود الشعار، وإذا لم يكن موجودًا استخدم شعارًا آخر إذا وجد
+    if not os.path.exists(logo_path):
+        for img in ['ahmed-helly-logo.png', 'mustafa-logo.png']:
+            potential_logo = f'static/img/{img}'
+            if os.path.exists(potential_logo):
+                logo_path = potential_logo
+                break
+
+    # قياس الصفحة (أفقي للاستفادة من المساحة)
+    page_width, page_height = landscape(A4)
+    
     # إعداد مستند PDF
-    doc = SimpleDocTemplate(pdf_path, pagesize=A4)
+    doc = SimpleDocTemplate(
+        pdf_path, 
+        pagesize=landscape(A4),
+        rightMargin=1*cm,
+        leftMargin=1*cm,
+        topMargin=1.5*cm,
+        bottomMargin=1.5*cm
+    )
+
+    # إعداد الأنماط والخطوط
     styles = getSampleStyleSheet()
+    
+    # نمط للعناوين في المربعات - اتجاه من اليمين لليسار للغة العربية
+    arabic_title_style = ParagraphStyle(
+        'ArabicTitle',
+        parent=styles['Heading2'],
+        alignment=TA_CENTER,
+        fontName='Helvetica-Bold',
+        fontSize=14,
+        textColor=colors.darkblue,
+        spaceAfter=6
+    )
+    
+    # نمط للكود نفسه
+    code_style = ParagraphStyle(
+        'CodeStyle',
+        parent=styles['Normal'],
+        alignment=TA_CENTER,
+        fontName='Courier-Bold',
+        fontSize=16,
+        textColor=colors.black,
+        spaceAfter=3
+    )
+    
+    # نمط للمعلومات الإضافية
+    info_style = ParagraphStyle(
+        'InfoStyle',
+        parent=styles['Normal'],
+        alignment=TA_CENTER,
+        fontName='Helvetica',
+        fontSize=8,
+        textColor=colors.gray
+    )
+    
+    # نمط لاسم الطالب
+    student_style = ParagraphStyle(
+        'StudentStyle',
+        parent=styles['Normal'],
+        alignment=TA_CENTER,
+        fontName='Helvetica-Bold',
+        fontSize=9,
+        textColor=colors.darkblue
+    )
 
     # إنشاء العناصر التي ستظهر في PDF
     elements = []
-
-    # إضافة عنوان
-    title_style = styles['Heading1']
-    title = Paragraph(f"أكواد المحاضرة: {video_title}", title_style)
+    
+    # إضافة صفحة عنوان
+    if os.path.exists(logo_path):
+        logo = Image(logo_path)
+        logo.drawWidth = 4*cm
+        logo.drawHeight = 4*cm
+        logo.hAlign = 'CENTER'
+        elements.append(logo)
+    
+    elements.append(Spacer(1, 1*cm))
+    
+    title_style = ParagraphStyle(
+        'MainTitle',
+        parent=styles['Heading1'],
+        alignment=TA_CENTER,
+        fontSize=22,
+        textColor=colors.darkblue
+    )
+    title = Paragraph(f"أكواد المحاضرة:<br/>{video_title}", title_style)
     elements.append(title)
-    elements.append(Spacer(1, 20))
-
-    # إنشاء بيانات الجدول
-    if with_students:
-        data = [['رقم', 'كود المحاضرة', 'اسم الطالب']]
-        for i, code_info in enumerate(codes, 1):
-            student_name = code_info.get('student', '')
-            data.append([str(i), code_info['code'], student_name])
-        # تعديل عرض الجدول ليتناسب مع وجود عمود إضافي
-        col_widths = [40, 150, 200]
-    else:
-        data = [['رقم', 'كود المحاضرة']]
-        for i, code_info in enumerate(codes, 1):
-            if isinstance(code_info, dict):
-                data.append([str(i), code_info['code']])
-            else:
-                data.append([str(i), code_info])
-        col_widths = [60, 200]
-
-    # إنشاء جدول مع تنسيق
-    table = Table(data, colWidths=col_widths)
-    table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black),
-    ]))
-
-    elements.append(table)
-
-    # إضافة معلومات إضافية
-    elements.append(Spacer(1, 30))
-    notes = Paragraph("ملاحظة: هذه الأكواد للاستخدام لمرة واحدة فقط، الرجاء الاحتفاظ بها بعناية.", styles["Normal"])
-    elements.append(notes)
-
-    # إضافة تاريخ إنشاء الأكواد
-    elements.append(Spacer(1, 10))
-    import datetime
+    
+    # إضافة التاريخ إلى صفحة العنوان
+    elements.append(Spacer(1, 1*cm))
     creation_date = datetime.datetime.now().strftime("%Y/%m/%d %H:%M")
-    date_note = Paragraph(f"تم إنشاء هذه الأكواد بتاريخ: {creation_date}", styles["Normal"])
+    date_note = Paragraph(f"تاريخ الإنشاء: {creation_date}", ParagraphStyle(
+        'DateStyle',
+        parent=styles['Normal'],
+        alignment=TA_CENTER,
+        fontSize=12
+    ))
     elements.append(date_note)
+    
+    # إضافة كمية الأكواد
+    elements.append(Spacer(1, 0.5*cm))
+    codes_count = Paragraph(f"عدد الأكواد: {len(codes)}", ParagraphStyle(
+        'CountStyle',
+        parent=styles['Normal'],
+        alignment=TA_CENTER,
+        fontSize=12
+    ))
+    elements.append(codes_count)
+    
+    # إضافة ملاحظة حول الأكواد
+    elements.append(Spacer(1, 1*cm))
+    notes = Paragraph(
+        "ملاحظة: هذه الأكواد للاستخدام لمرة واحدة فقط. بعد فصل البطاقات، وزعها على الطلاب بعناية.",
+        ParagraphStyle(
+            'NotesStyle',
+            parent=styles['Normal'],
+            alignment=TA_CENTER,
+            fontSize=10,
+            textColor=colors.red
+        )
+    )
+    elements.append(notes)
+    
+    # إضافة فاصل صفحة بعد صفحة العنوان
+    elements.append(PageBreak())
+
+    # إنشاء بطاقات للأكواد (9 بطاقات لكل صفحة)
+    codes_per_page = 9
+    rows_per_page = 3
+    cols_per_page = 3
+    
+    # تحديد عدد الصفحات اللازمة
+    pages_needed = math.ceil(len(codes) / codes_per_page)
+    
+    # معالجة كل صفحة على حدة
+    for page in range(pages_needed):
+        # إنشاء مصفوفة 3×3 للبطاقات
+        cards = []
+        for row in range(rows_per_page):
+            card_row = []
+            for col in range(cols_per_page):
+                code_index = page * codes_per_page + row * cols_per_page + col
+                
+                # التحقق مما إذا كان هناك المزيد من الأكواد
+                if code_index < len(codes):
+                    code_info = codes[code_index]
+                    
+                    # إنشاء محتوى البطاقة
+                    card_content = []
+                    
+                    # إضافة عنوان البطاقة
+                    card_title = Paragraph(f"كود المحاضرة", arabic_title_style)
+                    card_content.append(card_title)
+                    
+                    # إضافة الكود نفسه
+                    if isinstance(code_info, dict):
+                        code_text = code_info['code']
+                    else:
+                        code_text = code_info
+                    
+                    # تنسيق الكود لعرضه بشكل جميل داخل إطار
+                    code_paragraph = Paragraph(f"<b>{code_text}</b>", code_style)
+                    card_content.append(code_paragraph)
+                    
+                    # إضافة معلومات الطالب إذا كانت متوفرة
+                    if with_students and isinstance(code_info, dict) and 'student' in code_info:
+                        student_name = code_info.get('student', '')
+                        student_paragraph = Paragraph(f"الطالب: {student_name}", student_style)
+                        card_content.append(student_paragraph)
+                    
+                    # إضافة معلومات إضافية
+                    info = Paragraph(f"رقم: {code_index + 1} | محاضرة: {video_title}", info_style)
+                    card_content.append(info)
+                    
+                    # إنشاء جدول للبطاقة مع حدود وتظليل
+                    card_table = Table([card_content], colWidths=[8*cm])
+                    card_table.setStyle(TableStyle([
+                        ('BOX', (0, 0), (-1, -1), 1.5, colors.black),
+                        ('BACKGROUND', (0, 0), (-1, -1), colors.white),
+                        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                        ('TOPPADDING', (0, 0), (-1, -1), 5),
+                        ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
+                        ('LEFTPADDING', (0, 0), (-1, -1), 10),
+                        ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+                    ]))
+                    
+                    card_row.append(card_table)
+                else:
+                    # إضافة خلية فارغة إذا لم يكن هناك المزيد من الأكواد
+                    card_row.append("")
+            
+            cards.append(card_row)
+        
+        # إنشاء جدول للصفحة بأكملها
+        grid_table = Table(cards, colWidths=[8.5*cm]*3, rowHeights=[8*cm]*3)
+        grid_table.setStyle(TableStyle([
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('LEFTPADDING', (0, 0), (-1, -1), 5),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 5),
+            ('TOPPADDING', (0, 0), (-1, -1), 5),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
+        ]))
+        
+        elements.append(grid_table)
+        
+        # إضافة فاصل صفحة إذا لم تكن هذه هي الصفحة الأخيرة
+        if page < pages_needed - 1:
+            elements.append(PageBreak())
+
+    # إضافة صفحة للمعلومات في النهاية
+    elements.append(PageBreak())
+    
+    # إضافة معلومات المؤسسة وتعليمات إضافية
+    elements.append(Paragraph("تعليمات استخدام الأكواد", title_style))
+    elements.append(Spacer(1, 0.5*cm))
+    
+    instructions = [
+        "1. يمكن استخدام كل كود مرة واحدة فقط للوصول إلى المحاضرة المحددة.",
+        "2. على الطالب إدخال الكود في صفحة المحاضرة للتمكن من مشاهدتها.",
+        "3. الأكواد صالحة حتى يتم استخدامها وليس لها تاريخ انتهاء محدد.",
+        "4. في حالة وجود أي مشكلة في استخدام الكود، يرجى التواصل مع المشرف.",
+        "5. يرجى قص البطاقات بعناية على طول الخطوط وتوزيعها على الطلاب."
+    ]
+    
+    for instruction in instructions:
+        p = Paragraph(instruction, ParagraphStyle(
+            'InstructionStyle',
+            parent=styles['Normal'],
+            alignment=TA_RIGHT,
+            fontSize=12,
+            leading=16
+        ))
+        elements.append(p)
+        elements.append(Spacer(1, 3*mm))
+    
+    # إضافة معلومات الاتصال والشعار مرة أخرى
+    elements.append(Spacer(1, 1*cm))
+    
+    # إضافة شعار في الأسفل إذا كان موجودًا
+    if os.path.exists(logo_path):
+        logo = Image(logo_path)
+        logo.drawWidth = 3*cm
+        logo.drawHeight = 3*cm
+        logo.hAlign = 'CENTER'
+        elements.append(logo)
+    
+    elements.append(Spacer(1, 0.5*cm))
+    contact = Paragraph(
+        "للتواصل: example@domain.com | هاتف: 01234567890",
+        ParagraphStyle(
+            'ContactStyle',
+            parent=styles['Normal'],
+            alignment=TA_CENTER,
+            fontSize=10
+        )
+    )
+    elements.append(contact)
 
     # بناء المستند
     doc.build(elements)
