@@ -1878,6 +1878,52 @@ def reset_student_points(user_id):
         print(f"Error resetting points: {str(e)}")
     return redirect(url_for('admin.users_list'))
 
+@admin_bp.route('/set_student_points/<int:user_id>', methods=['GET', 'POST'])
+@login_required
+def set_student_points(user_id):
+    if not current_user.is_admin():
+        abort(403)
+        
+    student = User.query.get_or_404(user_id)
+    if student.role != 'student':
+        flash('يمكن تعديل نقاط الطلاب فقط', 'warning')
+        return redirect(url_for('admin.users_list'))
+    
+    form = SetPointsForm()
+    
+    if form.validate_on_submit():
+        try:
+            new_points = form.points.data
+            if new_points < 0:
+                flash('يجب أن تكون النقاط قيمة موجبة', 'danger')
+            else:
+                old_points = student.points
+                student.points = new_points
+                db.session.commit()
+                
+                # تسجيل العملية في السجل
+                points_log = PointsLog(
+                    user_id=student.id,
+                    admin_id=current_user.id,
+                    old_points=old_points,
+                    new_points=new_points,
+                    action='set_points',
+                    notes=form.notes.data or 'تحديد رصيد جديد من قبل المشرف'
+                )
+                db.session.add(points_log)
+                db.session.commit()
+                
+                flash(f'تم تعديل نقاط الطالب {student.full_name} إلى {new_points} بنجاح', 'success')
+                return redirect(url_for('admin.users_list'))
+        except Exception as e:
+            db.session.rollback()
+            flash('حدث خطأ أثناء تعديل النقاط', 'danger')
+            print(f"Error setting points: {str(e)}")
+    
+    # في حالة GET أو في حالة عدم صحة النموذج
+    form.current_points.data = student.points
+    return render_template('admin/set_student_points.html', form=form, student=student)
+
 @admin_bp.route('/users_list')
 @login_required
 def users_list():
