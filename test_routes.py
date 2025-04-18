@@ -1360,6 +1360,22 @@ def create_manual_test():
         )
         db.session.add(test)
         db.session.commit()
+        flash('تم إنشاء الاختبار بنجاح!', 'success')
+        return redirect(url_for('admin_tests.edit_test', test_id=test.id))
+        
+    return render_template('admin/create_manual_test.html', form=form)
+    
+    if form.validate_on_submit():
+        test = Test(
+            title=form.title.data,
+            description=form.description.data,
+            created_by=current_user.id,
+            time_limit_minutes=form.time_limit_minutes.data,
+            passing_score=form.passing_score.data,
+            is_active=form.is_active.data
+        )
+        db.session.add(test)
+        db.session.commit()
         
         # معالجة الأسئلة المضافة يدويًا
         questions_data = request.form.to_dict(flat=False)
