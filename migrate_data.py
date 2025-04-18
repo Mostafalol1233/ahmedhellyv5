@@ -94,8 +94,12 @@ def migrate_table(table_name):
         postgres_column_mapping = {}
         for col in column_names:
             if col == 'order':
-                # إذا كان PostgreSQL يستخدم اسم عمود مختلف لـ 'order'
-                if 'item_order' in postgres_column_names:
+                # تخصيص الاسم الصحيح لعمود 'order' حسب الجدول
+                if table_name == 'test_questions':
+                    postgres_column_mapping[col] = 'question_order'
+                elif table_name == 'question_choices':
+                    postgres_column_mapping[col] = 'choice_order'
+                elif 'item_order' in postgres_column_names:
                     postgres_column_mapping[col] = 'item_order'
                 elif 'question_order' in postgres_column_names:
                     postgres_column_mapping[col] = 'question_order'
@@ -103,6 +107,7 @@ def migrate_table(table_name):
                     postgres_column_mapping[col] = 'choice_order'
                 else:
                     # إذا لم نجد اسم بديل، سنتخطى هذا العمود
+                    logging.warning(f"تم تخطي عمود 'order' في جدول {table_name} لأنه لا يوجد اسم بديل")
                     postgres_column_mapping[col] = None
             else:
                 postgres_column_mapping[col] = col
