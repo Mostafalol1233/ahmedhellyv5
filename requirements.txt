@@ -27,3 +27,4 @@ docx
 flask-wtf
 requests
 openai
+mangum
