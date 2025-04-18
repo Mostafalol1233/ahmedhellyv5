@@ -754,6 +754,143 @@ def create_lecture_code(video_id):
     form.video_id.data = video_id
     return render_template('admin/generate_code.html', form=form, video=video)
 
+@admin_bp.route('/announcements')
+@login_required
+def announcements():
+    """عرض وإدارة الإعلانات"""
+    if not current_user.is_admin():
+        abort(403)
+    
+    announcements = Announcement.query.order_by(Announcement.created_at.desc()).all()
+    return render_template('admin/announcements.html', announcements=announcements)
+
+
+@admin_bp.route('/announcements/create', methods=['GET', 'POST'])
+@login_required
+def create_announcement():
+    """إنشاء إعلان جديد"""
+    if not current_user.is_admin():
+        abort(403)
+    
+    form = AnnouncementForm()
+    if form.validate_on_submit():
+        try:
+            # تحويل تاريخ الانتهاء إلى datetime إذا تم إدخاله
+            expiry_date = None
+            if form.expiry_date.data and form.expiry_date.data.strip():
+                try:
+                    expiry_date = datetime.strptime(form.expiry_date.data, '%Y-%m-%d')
+                except ValueError:
+                    flash('صيغة تاريخ الانتهاء غير صحيحة، يرجى استخدام الصيغة YYYY-MM-DD', 'danger')
+                    return render_template('admin/create_announcement.html', form=form)
+            
+            announcement = Announcement(
+                title=form.title.data,
+                content=form.content.data,
+                created_by=current_user.id,
+                priority=form.priority.data,
+                is_active=form.is_active.data,
+                expiry_date=expiry_date
+            )
+            
+            db.session.add(announcement)
+            db.session.commit()
+            flash('تم إنشاء الإعلان بنجاح!', 'success')
+            return redirect(url_for('admin.announcements'))
+        
+        except Exception as e:
+            db.session.rollback()
+            flash(f'حدث خطأ أثناء إنشاء الإعلان: {str(e)}', 'danger')
+    
+    return render_template('admin/create_announcement.html', form=form, announcement=None)
+
+
+@admin_bp.route('/announcements/edit/<int:announcement_id>', methods=['GET', 'POST'])
+@login_required
+def edit_announcement(announcement_id):
+    """تعديل إعلان موجود"""
+    if not current_user.is_admin():
+        abort(403)
+    
+    announcement = Announcement.query.get_or_404(announcement_id)
+    form = AnnouncementForm(obj=announcement)
+    
+    # ضبط تاريخ الانتهاء في النموذج
+    if announcement.expiry_date:
+        form.expiry_date.data = announcement.expiry_date.strftime('%Y-%m-%d')
+    
+    if form.validate_on_submit():
+        try:
+            # تحويل تاريخ الانتهاء إلى datetime إذا تم إدخاله
+            expiry_date = None
+            if form.expiry_date.data and form.expiry_date.data.strip():
+                try:
+                    expiry_date = datetime.strptime(form.expiry_date.data, '%Y-%m-%d')
+                except ValueError:
+                    flash('صيغة تاريخ الانتهاء غير صحيحة، يرجى استخدام الصيغة YYYY-MM-DD', 'danger')
+                    return render_template('admin/create_announcement.html', form=form, announcement=announcement)
+            
+            announcement.title = form.title.data
+            announcement.content = form.content.data
+            announcement.priority = form.priority.data
+            announcement.is_active = form.is_active.data
+            announcement.expiry_date = expiry_date
+            announcement.updated_at = datetime.utcnow()
+            
+            db.session.commit()
+            flash('تم تحديث الإعلان بنجاح!', 'success')
+            return redirect(url_for('admin.announcements'))
+        
+        except Exception as e:
+            db.session.rollback()
+            flash(f'حدث خطأ أثناء تحديث الإعلان: {str(e)}', 'danger')
+    
+    return render_template('admin/create_announcement.html', form=form, announcement=announcement)
+
+
+@admin_bp.route('/announcements/toggle/<int:announcement_id>')
+@login_required
+def toggle_announcement(announcement_id):
+    """تفعيل/إيقاف إعلان"""
+    if not current_user.is_admin():
+        abort(403)
+    
+    announcement = Announcement.query.get_or_404(announcement_id)
+    
+    try:
+        # عكس حالة التفعيل الحالية
+        announcement.is_active = not announcement.is_active
+        db.session.commit()
+        
+        status = "تفعيل" if announcement.is_active else "إيقاف"
+        flash(f'تم {status} الإعلان بنجاح!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'حدث خطأ أثناء تغيير حالة الإعلان: {str(e)}', 'danger')
+    
+    return redirect(url_for('admin.announcements'))
+
+
+@admin_bp.route('/announcements/delete/<int:announcement_id>')
+@login_required
+def delete_announcement(announcement_id):
+    """حذف إعلان"""
+    if not current_user.is_admin():
+        abort(403)
+    
+    announcement = Announcement.query.get_or_404(announcement_id)
+    
+    try:
+        db.session.delete(announcement)
+        db.session.commit()
+        flash('تم حذف الإعلان بنجاح!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'حدث خطأ أثناء حذف الإعلان: {str(e)}', 'danger')
+    
+    return redirect(url_for('admin.announcements'))
+
+
 def generate_codes_pdf(codes, video_title):
     """
     إنشاء ملف PDF مزخرف يحتوي على أكواد المحاضرات، مع إمكانية عرض أسماء الطلاب المعينين للأكواد
