@@ -433,12 +433,12 @@ def login():
         user = User.query.filter_by(username=form.username.data).first()
         if user is None:
             logging.warning(f"Login failed: User {form.username.data} not found")
-            flash('Invalid username or password', 'danger')
+            flash('اسم المستخدم غير موجود. يرجى التأكد من اسم المستخدم الصحيح', 'danger')
             return redirect(url_for('main.login'))
             
         if not user.check_password(form.password.data):
             logging.warning(f"Login failed: Incorrect password for {form.username.data}")
-            flash('Invalid username or password', 'danger')
+            flash('كلمة المرور غير صحيحة. يرجى التأكد من كلمة المرور', 'danger')
             return redirect(url_for('main.login'))
 
         try:
