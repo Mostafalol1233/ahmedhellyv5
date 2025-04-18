@@ -14,17 +14,18 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request,
 from flask_login import login_user, logout_user, login_required, current_user
 from urllib.parse import urlparse
 from werkzeug.utils import secure_filename
+from sqlalchemy import case
 from app import db, app
 from models import (
     User, Video, Comment, Post, VideoView, LectureCode, VideoLike, StudentNote, 
     AIChatMessage, DirectMessage, PointTransfer, Test, TestQuestion, QuestionChoice,
-    TestAttempt, TestAnswer
+    TestAttempt, TestAnswer, Announcement
 )
 from forms import (
     LoginForm, VideoUploadForm, VideoEditForm, PostForm, CommentForm, RegistrationForm,
     LectureCodeForm, GenerateCodeForm, StudentNoteForm, AIChatForm, ForgotPasswordForm,
     ResetPasswordForm, ProfileForm, DirectMessageForm, TransferPointsForm, TestCreateForm,
-    TestQuestionForm, QuestionChoiceForm, TestAttemptForm, TestTakingForm
+    TestQuestionForm, QuestionChoiceForm, TestAttemptForm, TestTakingForm, AnnouncementForm
 )
 
 # إعداد OpenAI API - مُعطّل حاليًا لاستخدام DuckDuckGo API بدلاً منه
@@ -1760,6 +1761,27 @@ def dashboard():
         except Exception as e:
             logging.error(f"Error fetching posts: {str(e)}")
             posts = []
+            
+        # جلب الإعلانات النشطة وغير منتهية الصلاحية
+        try:
+            current_date = datetime.now()
+            active_announcements = Announcement.query.filter(
+                Announcement.is_active == True,
+                (Announcement.expiry_date == None) | (Announcement.expiry_date > current_date)
+            ).order_by(
+                # ترتيب حسب الأهمية (العاجل أولاً) ثم حسب التاريخ (الأحدث أولاً)
+                case(
+                    (Announcement.priority == 'urgent', 1),
+                    (Announcement.priority == 'normal', 2),
+                    (Announcement.priority == 'low', 3),
+                    else_=4
+                ),
+                Announcement.created_at.desc()
+            ).all()
+            logging.info(f"Found {len(active_announcements)} active announcements to display")
+        except Exception as e:
+            logging.error(f"Error fetching announcements: {str(e)}")
+            active_announcements = []
 
         # تحديد الفيديوهات التي شاهدها الطالب بالفعل
         viewed_videos = set()
@@ -1772,7 +1794,7 @@ def dashboard():
             logging.error(f"Error fetching viewed videos: {str(e)}")
 
         try:
-            return render_template('student/dashboard.html', videos=videos, posts=posts, viewed_videos=viewed_videos)
+            return render_template('student/dashboard.html', videos=videos, posts=posts, viewed_videos=viewed_videos, announcements=active_announcements)
         except Exception as e:
             logging.error(f"Error rendering student dashboard: {str(e)}")
             return "Error rendering student dashboard. Please check the server logs.", 500
@@ -1790,13 +1812,34 @@ def dashboard_en():
     videos = Video.query.order_by(Video.created_at.desc()).all()
     posts = Post.query.order_by(Post.created_at.desc()).all()
 
+    # جلب الإعلانات النشطة وغير منتهية الصلاحية
+    try:
+        current_date = datetime.now()
+        active_announcements = Announcement.query.filter(
+            Announcement.is_active == True,
+            (Announcement.expiry_date == None) | (Announcement.expiry_date > current_date)
+        ).order_by(
+            # ترتيب حسب الأهمية (العاجل أولاً) ثم حسب التاريخ (الأحدث أولاً)
+            case(
+                (Announcement.priority == 'urgent', 1),
+                (Announcement.priority == 'normal', 2),
+                (Announcement.priority == 'low', 3),
+                else_=4
+            ),
+            Announcement.created_at.desc()
+        ).all()
+        logging.info(f"Found {len(active_announcements)} active announcements for EN dashboard")
+    except Exception as e:
+        logging.error(f"Error fetching announcements for EN dashboard: {str(e)}")
+        active_announcements = []
+
     # Get list of videos that the student has already watched
     viewed_videos = set()
     user_views = VideoView.query.filter_by(user_id=current_user.id).all()
     for view in user_views:
         viewed_videos.add(view.video_id)
 
-    return render_template('student/dashboard_en.html', videos=videos, posts=posts, viewed_videos=viewed_videos)
+    return render_template('student/dashboard_en.html', videos=videos, posts=posts, viewed_videos=viewed_videos, announcements=active_announcements)
 
 @student_bp.route('/video/<int:video_id>', methods=['GET', 'POST'])
 @login_required
