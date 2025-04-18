@@ -39,7 +39,7 @@ def create_sample_videos():
                 "title": "مقدمة في الجبر",
                 "url": "https://www.youtube.com/watch?v=DCK_IohKSik",
                 "description": "شرح أساسيات الجبر والمعادلات",
-                "uploaded_by": 1,  # المشرف
+                "uploaded_by": 7,  # المشرف (admin)
                 "requires_code": True,
                 "points_cost": 50
             },
@@ -47,7 +47,7 @@ def create_sample_videos():
                 "title": "حساب المثلثات",
                 "url": "https://www.youtube.com/watch?v=ekEXn1ZoxHE",
                 "description": "شرح نظريات حساب المثلثات الأساسية",
-                "uploaded_by": 1,  # المشرف
+                "uploaded_by": 7,  # المشرف (admin)
                 "requires_code": False,
                 "points_cost": 0
             },
@@ -55,7 +55,7 @@ def create_sample_videos():
                 "title": "الإحصاء والاحتمالات",
                 "url": "https://www.youtube.com/watch?v=gU9-ktOwWz4",
                 "description": "مقدمة في الإحصاء والاحتمالات",
-                "uploaded_by": 1,  # المشرف
+                "uploaded_by": 7,  # المشرف (admin)
                 "requires_code": True,
                 "points_cost": 100
             }
@@ -115,7 +115,7 @@ def create_sample_test():
         test = {
             "title": "اختبار الجبر والهندسة",
             "description": "اختبار شامل في الجبر والهندسة والمثلثات",
-            "created_by": 1,  # المشرف
+            "created_by": 7,  # المشرف (admin)
             "created_at": datetime.now(),
             "is_active": True,
             "time_limit_minutes": 45,
