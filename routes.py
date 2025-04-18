@@ -709,76 +709,16 @@ def create_lecture_code(video_id):
     video = Video.query.get_or_404(video_id)
 
     form = GenerateCodeForm()
-    # إحضار قائمة بالطلاب لعرضها في القائمة المنسدلة
-    students = User.query.filter_by(role='student').all()
-    form.student_id.choices = [(0, 'بدون تعيين لطالب محدد')] + [(s.id, s.full_name + ' (' + s.username + ')') for s in students]
-    form.selected_students.choices = [(s.id, s.full_name + ' (' + s.username + ')') for s in students]
+    # إزالة الخيارات المتعلقة بتعيين طلاب محددين
+    form.student_id.choices = [(0, 'الأكواد متاحة لجميع الطلاب')]
 
     if form.validate_on_submit():
         generated_codes = []
-        student_id = form.student_id.data
-        multiple_students = form.multiple_students.data
         num_codes = form.num_codes.data
         generate_pdf = form.generate_pdf.data
-        selected_students = form.selected_students.data
 
-        # إذا كان التوليد لعدة أكواد
-        if multiple_students:
-            # التحقق مما إذا كان المستخدم قد حدد طلابًا محددين
-            if selected_students:
-                # إنشاء كود لكل طالب محدد
-                for student_id in selected_students:
-                    code = generate_random_code()
-                    lecture_code = LectureCode(
-                        video_id=video.id,
-                        code=code,
-                        is_active=True,
-                        is_used=False,
-                        assigned_to=student_id
-                    )
-                    db.session.add(lecture_code)
-                    student = User.query.get(student_id)
-                    generated_codes.append({
-                        'code': code,
-                        'student': student.full_name if student else None,
-                        'student_username': student.username if student else None
-                    })
-
-                db.session.commit()
-
-                # إنشاء ملف PDF إذا طلب المستخدم ذلك
-                if generate_pdf:
-                    pdf_path = generate_codes_pdf(generated_codes, video.title, with_students=True)
-                    flash(f'تم إنشاء {len(selected_students)} كود وتعيينهم للطلاب المحددين بنجاح!', 'success')
-                    return send_file(pdf_path, as_attachment=True, download_name=f'lecture_codes_{video.id}.pdf')
-                else:
-                    flash(f'تم إنشاء {len(selected_students)} كود وتعيينهم للطلاب المحددين بنجاح!', 'success')
-                    return redirect(url_for('admin.lecture_codes'))
-            else:
-                # إنشاء أكواد بدون تعيين لطلاب محددين
-                for _ in range(num_codes):
-                    code = generate_random_code()
-                    lecture_code = LectureCode(
-                        video_id=video.id,
-                        code=code,
-                        is_active=True,
-                        is_used=False
-                    )
-                    db.session.add(lecture_code)
-                    generated_codes.append({'code': code})
-
-                db.session.commit()
-
-                # إنشاء ملف PDF إذا طلب المستخدم ذلك
-                if generate_pdf:
-                    pdf_path = generate_codes_pdf(generated_codes, video.title, with_students=False)
-                    flash(f'تم إنشاء {num_codes} كود بنجاح!', 'success')
-                    return send_file(pdf_path, as_attachment=True, download_name=f'lecture_codes_{video.id}.pdf')
-                else:
-                    flash(f'تم إنشاء {num_codes} كود بنجاح!', 'success')
-                    return redirect(url_for('admin.lecture_codes'))
-        else:
-            # إنشاء كود واحد (السلوك القديم)
+        # إنشاء أكواد بدون تعيين لطلاب محددين
+        for _ in range(num_codes):
             code = generate_random_code()
             lecture_code = LectureCode(
                 video_id=video.id,
@@ -786,26 +726,25 @@ def create_lecture_code(video_id):
                 is_active=True,
                 is_used=False
             )
-
-            # في حالة إذا تم تحديد طالب معين
-            if student_id != 0:
-                lecture_code.assigned_to = student_id
-                student = User.query.get(student_id)
-                success_message = f'تم إنشاء كود جديد للمحاضرة وتعيينه للطالب {student.full_name}: {code}'
-            else:
-                success_message = f'تم إنشاء كود جديد للمحاضرة: {code}'
-
             db.session.add(lecture_code)
-            db.session.commit()
+            generated_codes.append({'code': code})
 
-            flash(success_message, 'success')
+        db.session.commit()
+
+        # إنشاء ملف PDF إذا طلب المستخدم ذلك
+        if generate_pdf:
+            pdf_path = generate_codes_pdf(generated_codes, video.title)
+            flash(f'تم إنشاء {num_codes} كود بنجاح!', 'success')
+            return send_file(pdf_path, as_attachment=True, download_name=f'lecture_codes_{video.id}.pdf')
+        else:
+            flash(f'تم إنشاء {num_codes} كود بنجاح!', 'success')
             return redirect(url_for('admin.lecture_codes'))
 
     # في حالة GET
     form.video_id.data = video_id
     return render_template('admin/generate_code.html', form=form, video=video)
 
-def generate_codes_pdf(codes, video_title, with_students=False):
+def generate_codes_pdf(codes, video_title):
     """
     إنشاء ملف PDF مزخرف يحتوي على أكواد المحاضرات، مع إمكانية عرض أسماء الطلاب المعينين للأكواد
     يتم تنسيق الأكواد في مربعات مستقلة وجميلة ليسهل قصها وتوزيعها
@@ -1029,13 +968,10 @@ def generate_codes_pdf(codes, video_title, with_students=False):
                     # معلومات إضافية
                     info_paragraph = Paragraph(f"رقم: {code_index + 1} | محاضرة: {video_title}", info_style)
                     
-                    # إضافة معلومات الطالب إذا كانت متوفرة
+                    # لم يعد هناك معلومات طالب محدد - الأكواد متاحة للجميع
                     student_paragraph = None
-                    if with_students and isinstance(code_info, dict) and 'student' in code_info:
-                        student_name = code_info.get('student', '')
-                        student_paragraph = Paragraph(f"الطالب: {student_name}", student_style)
                     
-                    # إنشاء محتوى البطاقة - تصميم بمربع كبير
+                    # إنشاء محتوى البطاقة - تصميم بمربع كبير نظيف وواضح
                     if os.path.exists(teacher_image_path):
                         # إنشاء محتوى البطاقة بصورة المستر في المنتصف
                         
