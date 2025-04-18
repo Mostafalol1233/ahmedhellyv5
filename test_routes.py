@@ -52,19 +52,49 @@ CORRECT_ANSWER_PATTERNS = [
 
 def extract_text_from_pdf(pdf_file):
     """استخراج النص من ملف PDF"""
-    pdf_reader = PdfReader(pdf_file)
-    text = ""
-    for page in pdf_reader.pages:
-        text += page.extract_text() + "\n\n"
-    return text
+    try:
+        pdf_reader = PdfReader(pdf_file)
+        text = ""
+        for page in pdf_reader.pages:
+            page_text = page.extract_text()
+            if page_text:  # تحقق من أن النص ليس فارغًا
+                text += page_text + "\n\n"
+        
+        # إذا لم يستطع استخراج أي نص، أعلم المستخدم
+        if not text.strip():
+            raise ValueError("لم يتم العثور على نص قابل للاستخراج في ملف PDF. قد يكون الملف محميًا أو يحتوي على نص كصور فقط.")
+        
+        return text
+    except Exception as e:
+        logging.error(f"خطأ في استخراج النص من ملف PDF: {str(e)}")
+        raise ValueError(f"حدث خطأ أثناء معالجة ملف PDF: {str(e)}")
 
 def extract_text_from_docx(docx_file):
     """استخراج النص من ملف Word"""
-    doc = docx.Document(docx_file)
-    text = ""
-    for para in doc.paragraphs:
-        text += para.text + "\n"
-    return text
+    try:
+        doc = docx.Document(docx_file)
+        text = ""
+        
+        # استخراج النص من الفقرات
+        for para in doc.paragraphs:
+            if para.text:
+                text += para.text + "\n"
+        
+        # استخراج النص من الجداول إذا وجدت
+        for table in doc.tables:
+            for row in table.rows:
+                for cell in row.cells:
+                    if cell.text:
+                        text += cell.text + "\n"
+        
+        # التحقق من وجود نص
+        if not text.strip():
+            raise ValueError("لم يتم العثور على نص قابل للاستخراج في ملف Word.")
+        
+        return text
+    except Exception as e:
+        logging.error(f"خطأ في استخراج النص من ملف Word: {str(e)}")
+        raise ValueError(f"حدث خطأ أثناء معالجة ملف Word: {str(e)}")
 
 def find_questions_and_choices(text):
     """
@@ -79,11 +109,18 @@ def find_questions_and_choices(text):
     current_question = None
     in_choices = False
     choices = []
+    choice_markers = {}  # لتخزين علامات الخيارات
+    
+    # تسجيل إضافي للتتبع
+    logging.info(f"بدء معالجة نص بطول {len(text)} حرف")
     
     for i, line in enumerate(lines):
         line = line.strip()
         if not line:
             continue
+        
+        # تسجيل للتتبع
+        logging.debug(f"معالجة السطر رقم {i}: {line[:50]}...")
         
         # التحقق من وجود سؤال جديد
         is_question = False
@@ -99,20 +136,25 @@ def find_questions_and_choices(text):
                     elif not choices:
                         question_type = 'short_answer'
                     
+                    # إضافة السؤال الحالي للقائمة
                     questions.append({
                         'question_text': current_question,
                         'choices': choices,
                         'question_type': question_type
                     })
+                    logging.debug(f"تم إضافة سؤال: {current_question[:30]}... مع {len(choices)} خيارات")
                 
                 # استخراج نص السؤال
                 if len(match.groups()) > 1:
                     q_num, q_text = match.groups()
                     current_question = f"{q_text}"
+                    logging.debug(f"تم اكتشاف سؤال جديد برقم {q_num}: {q_text[:30]}...")
                 else:
                     current_question = line
+                    logging.debug(f"تم اكتشاف سؤال جديد: {line[:30]}...")
                 
                 choices = []
+                choice_markers = {}
                 in_choices = True
                 is_question = True
                 break
@@ -122,27 +164,53 @@ def find_questions_and_choices(text):
         
         # التحقق من وجود خيارات إذا كنا في سياق سؤال
         if in_choices and current_question:
+            # البحث عن خيار جديد
+            is_choice = False
             for pattern in CHOICE_PATTERNS:
                 match = re.search(pattern, line)
                 if match:
                     choice_marker, choice_text = match.groups()
+                    # تخزين علامة الخيار للاستخدام لاحقًا
+                    choice_idx = len(choices)
                     choices.append({
                         'text': choice_text.strip(),
-                        'is_correct': False  # سيتم تحديده لاحقًا
+                        'is_correct': False,  # سيتم تحديده لاحقًا
+                        'marker': choice_marker  # تخزين العلامة
                     })
+                    choice_markers[choice_marker] = choice_idx
+                    logging.debug(f"تم اكتشاف خيار جديد بعلامة {choice_marker}: {choice_text[:30]}...")
+                    is_choice = True
                     break
             
-            # التحقق من وجود إشارة للإجابة الصحيحة
-            for pattern in CORRECT_ANSWER_PATTERNS:
-                match = re.search(pattern, line)
-                if match and choices:
-                    correct_marker = match.group(1)
-                    # تحديد أي من الخيارات هو الصحيح بناءً على العلامة
-                    for j, choice in enumerate(choices):
-                        if correct_marker.isdigit() and j + 1 == int(correct_marker):
-                            choice['is_correct'] = True
-                        elif not correct_marker.isdigit() and choice.get('marker') == correct_marker:
-                            choice['is_correct'] = True
+            # إذا لم يكن الخط خيارًا، تحقق من أنه قد يكون إشارة للإجابة الصحيحة
+            if not is_choice:
+                for pattern in CORRECT_ANSWER_PATTERNS:
+                    match = re.search(pattern, line)
+                    if match and choices:
+                        correct_marker = match.group(1)
+                        logging.debug(f"تم اكتشاف إشارة للإجابة الصحيحة: {correct_marker}")
+                        
+                        # مسح الإجابات الصحيحة السابقة (للتأكد من وجود إجابة صحيحة واحدة فقط)
+                        for choice in choices:
+                            choice['is_correct'] = False
+                        
+                        # تحديد أي من الخيارات هو الصحيح بناءً على العلامة
+                        for j, choice in enumerate(choices):
+                            # إذا كانت العلامة رقمية، قارن مع ترتيب الخيار
+                            if correct_marker.isdigit() and j + 1 == int(correct_marker):
+                                choice['is_correct'] = True
+                                logging.debug(f"تم تعيين الخيار رقم {j+1} كإجابة صحيحة")
+                            # إذا كانت العلامة حرفية، تحقق من علامة الخيار المخزنة
+                            elif not correct_marker.isdigit():
+                                stored_marker = choice.get('marker', '')
+                                # تحقق من تطابق العلامة مع المخزنة للخيار
+                                if stored_marker.lower() == correct_marker.lower():
+                                    choice['is_correct'] = True
+                                    logging.debug(f"تم تعيين الخيار بعلامة {stored_marker} كإجابة صحيحة")
+                                # أو تحقق من تطابق العلامة مع أول حرف من نص الخيار
+                                elif choice.get('text', '') and choice.get('text', '')[0].lower() == correct_marker.lower():
+                                    choice['is_correct'] = True
+                                    logging.debug(f"تم تعيين الخيار مع بداية النص {correct_marker} كإجابة صحيحة")
     
     # إضافة آخر سؤال إذا وجد
     if current_question:
@@ -163,85 +231,151 @@ def find_questions_and_choices(text):
 def process_test_file(file, test_id):
     """
     معالجة ملف الاختبار وإنشاء الأسئلة والخيارات
+    
+    Args:
+        file: ملف الاختبار المرفوع (ملف PDF أو Word)
+        test_id: معرف الاختبار الذي سيتم إضافة الأسئلة له
+        
+    Returns:
+        int: عدد الأسئلة التي تم إنشاؤها
+        
+    Raises:
+        ValueError: في حالة وجود خطأ في معالجة الملف أو استخراج الأسئلة
     """
-    # تحديد نوع الملف والتعامل معه
-    filename = secure_filename(file.filename)
-    file_extension = filename.rsplit('.', 1)[1].lower() if '.' in filename else ''
-    
-    # استخراج النص من الملف
-    text = ""
-    if file_extension == 'pdf':
-        # حفظ الملف مؤقتًا على القرص ثم قراءته
-        with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as temp:
-            file.save(temp.name)
-            temp_name = temp.name
+    try:
+        # التحقق من وجود الملف
+        if not file or not file.filename:
+            raise ValueError('لم يتم تحديد ملف للرفع')
         
-        text = extract_text_from_pdf(temp_name)
-        os.unlink(temp_name)  # حذف الملف المؤقت
-        
-    elif file_extension in ['doc', 'docx']:
-        # حفظ الملف مؤقتًا على القرص ثم قراءته
-        with tempfile.NamedTemporaryFile(delete=False, suffix=f'.{file_extension}') as temp:
-            file.save(temp.name)
-            temp_name = temp.name
-        
-        text = extract_text_from_docx(temp_name)
-        os.unlink(temp_name)  # حذف الملف المؤقت
-    
-    else:
-        raise ValueError(f'نوع الملف غير مدعوم: {file_extension}. يرجى استخدام ملفات PDF أو Word.')
-    
-    # استخراج الأسئلة والخيارات من النص
-    questions_data = find_questions_and_choices(text)
-    
-    # إذا لم يتم العثور على أي أسئلة
-    if not questions_data:
-        raise ValueError('لم يتم العثور على أي أسئلة في الملف. تأكد من تنسيق الملف بشكل صحيح.')
-    
-    # إنشاء الأسئلة في قاعدة البيانات
-    for i, q_data in enumerate(questions_data, 1):
-        question = TestQuestion(
-            test_id=test_id,
-            question_text=q_data['question_text'],
-            question_type=q_data['question_type'],
-            points=1,  # يمكن تعديله لاحقًا
-            order=i
-        )
-        db.session.add(question)
-        db.session.flush()  # للحصول على معرف السؤال
-        
-        # إنشاء الخيارات للسؤال
-        for j, choice_data in enumerate(q_data['choices'], 1):
-            choice = QuestionChoice(
-                question_id=question.id,
-                choice_text=choice_data['text'],
-                is_correct=choice_data['is_correct'],
-                order=j
-            )
-            db.session.add(choice)
-        
-        # إذا كان السؤال من نوع صح/خطأ ولم يتم العثور على خيارات، إنشاء خيارات افتراضية
-        if q_data['question_type'] == 'true_false' and not q_data['choices']:
-            # خيار "صح"
-            choice_true = QuestionChoice(
-                question_id=question.id,
-                choice_text='صح',
-                is_correct=True,  # افتراضي، يمكن تعديله
-                order=1
-            )
-            db.session.add(choice_true)
+        # تحديد نوع الملف والتعامل معه
+        filename = secure_filename(file.filename)
+        if '.' not in filename:
+            raise ValueError('الملف يجب أن يحتوي على امتداد (pdf، docx)')
             
-            # خيار "خطأ"
-            choice_false = QuestionChoice(
-                question_id=question.id,
-                choice_text='خطأ',
-                is_correct=False,
-                order=2
+        file_extension = filename.rsplit('.', 1)[1].lower()
+        
+        # التحقق من امتداد الملف
+        if file_extension not in ['pdf', 'doc', 'docx']:
+            raise ValueError(f'نوع الملف غير مدعوم: {file_extension}. يرجى استخدام ملفات PDF أو Word (doc/docx).')
+        
+        # تسجيل بدء معالجة الملف
+        logging.info(f"بدء معالجة ملف '{filename}' للاختبار رقم {test_id}")
+        
+        # استخراج النص من الملف
+        text = ""
+        temp_name = None
+        
+        try:
+            if file_extension == 'pdf':
+                # حفظ الملف مؤقتًا على القرص ثم قراءته
+                with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as temp:
+                    file.save(temp.name)
+                    temp_name = temp.name
+                
+                text = extract_text_from_pdf(temp_name)
+                
+            elif file_extension in ['doc', 'docx']:
+                # حفظ الملف مؤقتًا على القرص ثم قراءته
+                with tempfile.NamedTemporaryFile(delete=False, suffix=f'.{file_extension}') as temp:
+                    file.save(temp.name)
+                    temp_name = temp.name
+                
+                text = extract_text_from_docx(temp_name)
+                
+        finally:
+            # تأكد من حذف الملف المؤقت حتى في حالة حدوث خطأ
+            if temp_name and os.path.exists(temp_name):
+                os.unlink(temp_name)
+        
+        # تسجيل نجاح استخراج النص
+        logging.info(f"تم استخراج {len(text)} حرف من الملف")
+        
+        # استخراج الأسئلة والخيارات من النص
+        questions_data = find_questions_and_choices(text)
+        
+        # إذا لم يتم العثور على أي أسئلة
+        if not questions_data:
+            raise ValueError('لم يتم العثور على أي أسئلة في الملف. تأكد من تنسيق الملف بشكل صحيح.')
+        
+        # تسجيل عدد الأسئلة التي تم العثور عليها
+        logging.info(f"تم العثور على {len(questions_data)} سؤال في الملف")
+        
+        # تتبع عدد الإجابات الصحيحة لكل سؤال
+        for i, q_data in enumerate(questions_data):
+            correct_answers = sum(1 for c in q_data['choices'] if c.get('is_correct', False))
+            if q_data['question_type'] == 'multiple_choice' and correct_answers == 0 and q_data['choices']:
+                # إذا لم يتم العثور على إجابة صحيحة، اجعل الإجابة الأولى هي الصحيحة افتراضيًا
+                q_data['choices'][0]['is_correct'] = True
+                logging.warning(f"لم يتم تحديد إجابة صحيحة للسؤال رقم {i+1}. تم تعيين الخيار الأول كإجابة صحيحة افتراضيًا.")
+        
+        # إنشاء الأسئلة في قاعدة البيانات
+        for i, q_data in enumerate(questions_data, 1):
+            # إنشاء السؤال
+            question = TestQuestion(
+                test_id=test_id,
+                question_text=q_data['question_text'],
+                question_type=q_data['question_type'],
+                points=1,  # يمكن تعديله لاحقًا
+                order=i
             )
-            db.session.add(choice_false)
-    
-    db.session.commit()
-    return len(questions_data)  # إرجاع عدد الأسئلة التي تم إنشاؤها
+            db.session.add(question)
+            db.session.flush()  # للحصول على معرف السؤال
+            
+            # إنشاء الخيارات للسؤال
+            choice_count = 0
+            for j, choice_data in enumerate(q_data['choices'], 1):
+                # تجاهل الخيارات الفارغة
+                if not choice_data.get('text', '').strip():
+                    continue
+                    
+                choice = QuestionChoice(
+                    question_id=question.id,
+                    choice_text=choice_data['text'],
+                    is_correct=choice_data['is_correct'],
+                    order=j
+                )
+                db.session.add(choice)
+                choice_count += 1
+            
+            # إذا كان السؤال من نوع صح/خطأ ولم يتم العثور على خيارات، إنشاء خيارات افتراضية
+            if q_data['question_type'] == 'true_false' and choice_count == 0:
+                # خيار "صح"
+                choice_true = QuestionChoice(
+                    question_id=question.id,
+                    choice_text='صح',
+                    is_correct=True,  # افتراضي، يمكن تعديله
+                    order=1
+                )
+                db.session.add(choice_true)
+                
+                # خيار "خطأ"
+                choice_false = QuestionChoice(
+                    question_id=question.id,
+                    choice_text='خطأ',
+                    is_correct=False,
+                    order=2
+                )
+                db.session.add(choice_false)
+                
+                logging.info(f"تم إضافة خيارات صح/خطأ افتراضية للسؤال رقم {i}")
+        
+        # حفظ كل التغييرات في قاعدة البيانات
+        db.session.commit()
+        logging.info(f"تم إنشاء {len(questions_data)} سؤال بنجاح")
+        
+        return len(questions_data)  # إرجاع عدد الأسئلة التي تم إنشاؤها
+        
+    except ValueError as e:
+        # لأخطاء التحقق، نمرر الخطأ إلى المتصل
+        logging.error(f"خطأ تحقق في معالجة ملف الاختبار: {str(e)}")
+        raise
+        
+    except Exception as e:
+        # لأي خطأ آخر، نسجل التفاصيل ونمرر رسالة خطأ عامة
+        logging.error(f"خطأ غير متوقع في معالجة ملف الاختبار: {str(e)}", exc_info=True)
+        # التراجع عن التغييرات في قاعدة البيانات
+        db.session.rollback()
+        raise ValueError(f"حدث خطأ أثناء معالجة ملف الاختبار: {str(e)}")
 
 # إنشاء Blueprints للطلاب والمسؤولين
 admin_tests = Blueprint('admin_tests', __name__)
@@ -339,6 +473,7 @@ def create_test():
             created_by=current_user.id,
             time_limit_minutes=form.time_limit_minutes.data,
             passing_score=form.passing_score.data,
+            max_attempts=form.max_attempts.data,
             is_active=form.is_active.data,
             # إضافة خيارات الوصول للاختبار
             access_type=form.access_type.data,
