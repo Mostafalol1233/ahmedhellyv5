@@ -484,3 +484,30 @@ class TestRetryRequest(db.Model):
     
     def __repr__(self):
         return f'<TestRetryRequest {self.id} for Test {self.test_id}, User {self.user_id}, Status: {self.status}>'
+
+
+class Announcement(db.Model):
+    """نموذج للإعلانات والإشعارات التي ينشرها المشرفون"""
+    __tablename__ = 'announcements'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    created_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    is_active = db.Column(db.Boolean, default=True)
+    priority = db.Column(db.String(20), default='normal')  # normal, urgent, low
+    expiry_date = db.Column(db.DateTime, nullable=True)
+    
+    # العلاقات
+    author = db.relationship('User', foreign_keys=[created_by], backref=db.backref('announcements', lazy='dynamic'))
+    
+    def __repr__(self):
+        return f'<Announcement {self.id}: {self.title}>'
+    
+    def is_expired(self):
+        """التحقق مما إذا كان الإعلان منتهي الصلاحية"""
+        if not self.expiry_date:
+            return False
+        return datetime.utcnow() > self.expiry_date

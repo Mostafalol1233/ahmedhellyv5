@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block title %}إدارة الإعلانات - منصة التعليم{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="mb-3 text-primary">إدارة الإعلانات</h1>
+            <p class="text-muted">يمكنك من خلال هذه الصفحة إنشاء وإدارة الإعلانات المعروضة للطلاب</p>
+            
+            <div class="d-flex justify-content-end">
+                <a href="{{ url_for('admin.create_announcement') }}" class="btn btn-primary">
+                    <i class="fas fa-plus-circle"></i> إعلان جديد
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0">الإعلانات الحالية</h5>
+                </div>
+                <div class="card-body">
+                    {% if announcements %}
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>العنوان</th>
+                                        <th>الأهمية</th>
+                                        <th>تاريخ النشر</th>
+                                        <th>الحالة</th>
+                                        <th>تاريخ الانتهاء</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for announcement in announcements %}
+                                    <tr class="{% if announcement.priority == 'urgent' %}table-danger{% elif announcement.priority == 'low' %}table-secondary{% endif %}">
+                                        <td>{{ announcement.title }}</td>
+                                        <td>
+                                            {% if announcement.priority == 'urgent' %}
+                                                <span class="badge bg-danger">عاجل</span>
+                                            {% elif announcement.priority == 'normal' %}
+                                                <span class="badge bg-primary">عادي</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">منخفض الأهمية</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ announcement.created_at.strftime('%Y-%m-%d') }}</td>
+                                        <td>
+                                            {% if announcement.is_active %}
+                                                <span class="badge bg-success">نشط</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">غير نشط</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if announcement.expiry_date %}
+                                                {{ announcement.expiry_date.strftime('%Y-%m-%d') }}
+                                                {% if announcement.is_expired() %}
+                                                    <span class="badge bg-danger">منتهي</span>
+                                                {% endif %}
+                                            {% else %}
+                                                <span class="text-muted">غير محدد</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <a href="{{ url_for('admin.edit_announcement', announcement_id=announcement.id) }}" class="btn btn-sm btn-info" title="تعديل">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a href="{{ url_for('admin.toggle_announcement', announcement_id=announcement.id) }}" class="btn btn-sm {% if announcement.is_active %}btn-warning{% else %}btn-success{% endif %}" title="تفعيل/إيقاف">
+                                                    <i class="fas {% if announcement.is_active %}fa-eye-slash{% else %}fa-eye{% endif %}"></i>
+                                                </a>
+                                                <a href="{{ url_for('admin.delete_announcement', announcement_id=announcement.id) }}" class="btn btn-sm btn-danger" title="حذف" onclick="return confirm('هل أنت متأكد من حذف هذا الإعلان؟');">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <p class="mb-0">لا توجد إعلانات حالياً.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

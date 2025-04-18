@@ -232,6 +232,26 @@ class SMSTestForm(FlaskForm):
     ])
     submit = SubmitField('إرسال رسالة اختبار')
 
+
+class AnnouncementForm(FlaskForm):
+    """نموذج إنشاء وتعديل الإعلانات"""
+    title = StringField('عنوان الإعلان', validators=[
+        DataRequired(message='يجب إدخال عنوان الإعلان'),
+        Length(min=3, max=200, message='يجب أن يكون العنوان بين 3 و 200 حرف')
+    ])
+    content = TextAreaField('محتوى الإعلان', validators=[
+        DataRequired(message='يجب إدخال محتوى الإعلان'),
+        Length(min=5, max=2000, message='يجب أن يكون المحتوى بين 5 و 2000 حرف')
+    ])
+    priority = SelectField('أهمية الإعلان', choices=[
+        ('normal', 'عادي'),
+        ('urgent', 'عاجل'),
+        ('low', 'منخفض الأهمية')
+    ], validators=[DataRequired(message='يجب اختيار مستوى الأهمية')])
+    is_active = BooleanField('نشط', default=True)
+    expiry_date = StringField('تاريخ انتهاء الإعلان (اختياري - بصيغة YYYY-MM-DD)', validators=[Optional()])
+    submit = SubmitField('حفظ الإعلان')
+
 class BulkSMSForm(FlaskForm):
     """Form for sending bulk SMS messages"""
     user_ids = SelectMultipleField('تحديد المستخدمين', coerce=int, validators=[
