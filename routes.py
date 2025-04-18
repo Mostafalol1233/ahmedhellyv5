@@ -954,7 +954,7 @@ def generate_codes_pdf(codes, video_title, with_students=False):
     # إضافة فاصل صفحة بعد صفحة العنوان
     elements.append(PageBreak())
 
-    # إنشاء بطاقات للأكواد (9 بطاقات لكل صفحة)
+    # إنشاء بطاقات للأكواد (9 بطاقات لكل صفحة) بحجم أكبر
     codes_per_page = 9
     rows_per_page = 3
     cols_per_page = 3
@@ -975,45 +975,154 @@ def generate_codes_pdf(codes, video_title, with_students=False):
                 if code_index < len(codes):
                     code_info = codes[code_index]
                     
-                    # إنشاء محتوى البطاقة
-                    card_content = []
+                    # إنشاء محتوى البطاقة مع تصميم جديد
+                    # سنستخدم تصميم متقدم مع صورة المستر وإطار أكبر وأوضح
                     
-                    # إضافة عنوان البطاقة
-                    card_title = Paragraph(f"كود المحاضرة", arabic_title_style)
-                    card_content.append(card_title)
-                    
-                    # إضافة الكود نفسه
+                    # تحديد الكود
                     if isinstance(code_info, dict):
                         code_text = code_info['code']
                     else:
                         code_text = code_info
                     
-                    # تنسيق الكود لعرضه بشكل جميل داخل إطار
-                    code_paragraph = Paragraph(f"<b>{code_text}</b>", code_style)
-                    card_content.append(code_paragraph)
+                    # مسار صورة المستر
+                    teacher_image_path = 'static/img/teachers/teacher_image.jpg'
+                    
+                    # إنشاء هيكل البطاقة باستخدام الجداول المتداخلة للتحكم بشكل أكبر في التصميم
+                    # جدول رئيسي للبطاقة
+                    
+                    # معلومات الاختبار
+                    header_style = ParagraphStyle(
+                        'HeaderStyle',
+                        parent=styles['Heading3'],
+                        alignment=TA_CENTER,
+                        fontName='Helvetica-Bold',
+                        fontSize=16,  # زيادة حجم الخط
+                        textColor=colors.white,  # تغيير لون النص إلى أبيض للتباين مع الخلفية الزرقاء
+                        spaceAfter=5,  # زيادة المسافة بعد العنوان
+                        leading=20,  # زيادة المسافة بين الأسطر
+                        backColor=colors.darkblue,  # إضافة لون خلفية للعنوان
+                        borderPadding=6  # إضافة حشو داخلي للعنوان
+                    )
+                    
+                    # إنشاء عنوان البطاقة
+                    card_title = Paragraph(f"كود المحاضرة", header_style)
+                    
+                    # تنسيق أفضل للكود نفسه - جعله أكبر وأكثر وضوحاً
+                    enhanced_code_style = ParagraphStyle(
+                        'EnhancedCodeStyle',
+                        parent=styles['Normal'],
+                        alignment=TA_CENTER,
+                        fontName='Courier-Bold',
+                        fontSize=18,  # حجم أكبر للكود
+                        textColor=colors.black,
+                        leading=22,
+                        borderWidth=1,
+                        borderColor=colors.black,
+                        borderPadding=8,
+                        borderRadius=5,
+                        backColor=colors.lightgrey,
+                    )
+                    
+                    # تنسيق الكود بشكل أفضل
+                    code_paragraph = Paragraph(f"<b>{code_text}</b>", enhanced_code_style)
+                    
+                    # معلومات إضافية
+                    info_paragraph = Paragraph(f"رقم: {code_index + 1} | محاضرة: {video_title}", info_style)
                     
                     # إضافة معلومات الطالب إذا كانت متوفرة
+                    student_paragraph = None
                     if with_students and isinstance(code_info, dict) and 'student' in code_info:
                         student_name = code_info.get('student', '')
                         student_paragraph = Paragraph(f"الطالب: {student_name}", student_style)
-                        card_content.append(student_paragraph)
                     
-                    # إضافة معلومات إضافية
-                    info = Paragraph(f"رقم: {code_index + 1} | محاضرة: {video_title}", info_style)
-                    card_content.append(info)
-                    
-                    # إنشاء جدول للبطاقة مع حدود وتظليل
-                    card_table = Table([card_content], colWidths=[8*cm])
-                    card_table.setStyle(TableStyle([
-                        ('BOX', (0, 0), (-1, -1), 1.5, colors.black),
-                        ('BACKGROUND', (0, 0), (-1, -1), colors.white),
-                        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-                        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-                        ('TOPPADDING', (0, 0), (-1, -1), 5),
-                        ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
-                        ('LEFTPADDING', (0, 0), (-1, -1), 10),
-                        ('RIGHTPADDING', (0, 0), (-1, -1), 10),
-                    ]))
+                    # إنشاء محتوى البطاقة
+                    if os.path.exists(teacher_image_path):
+                        # إنشاء محتوى البطاقة بصورة المستر
+                        
+                        # صورة المستر
+                        teacher_img = Image(teacher_image_path)
+                        teacher_img.drawWidth = 4*cm  # عرض الصورة
+                        teacher_img.drawHeight = 4*cm  # ارتفاع الصورة
+                        
+                        # تقسيم البطاقة إلى قسمين: العنوان والمحتوى
+                        header_data = [[card_title]]
+                        header_table = Table(header_data, colWidths=[8.5*cm])
+                        header_table.setStyle(TableStyle([
+                            ('BACKGROUND', (0, 0), (-1, -1), colors.lightblue),
+                            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                            ('TEXTCOLOR', (0, 0), (-1, -1), colors.white),
+                            ('TOPPADDING', (0, 0), (-1, -1), 5),
+                            ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
+                        ]))
+                        
+                        # محتوى البطاقة مع الصورة
+                        content_data = [
+                            [teacher_img, code_paragraph]
+                        ]
+                        
+                        if student_paragraph:
+                            content_data.append([student_paragraph, ''])
+                        
+                        content_data.append([info_paragraph, ''])
+                        
+                        content_table = Table(content_data, colWidths=[4.5*cm, 4*cm])
+                        content_table.setStyle(TableStyle([
+                            ('SPAN', (0, 0), (0, -1)),  # دمج الخلايا للصورة
+                            ('BACKGROUND', (0, 0), (-1, -1), colors.white),
+                            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                            ('TOPPADDING', (0, 0), (-1, -1), 10),  # زيادة المساحة العلوية
+                            ('BOTTOMPADDING', (0, 0), (-1, -1), 10),  # زيادة المساحة السفلية
+                            ('LEFTPADDING', (1, 0), (1, -1), 0),  # تقليل المساحة اليسرى لخلية الكود
+                            ('RIGHTPADDING', (1, 0), (1, -1), 0),  # تقليل المساحة اليمنى لخلية الكود
+                        ]))
+                        
+                        # الجمع بين العنوان والمحتوى
+                        card_data = [
+                            [header_table],
+                            [content_table]
+                        ]
+                        
+                        card_table = Table(card_data, colWidths=[8.5*cm])
+                        card_table.setStyle(TableStyle([
+                            ('BOX', (0, 0), (-1, -1), 2, colors.black),  # حدود أكثر سماكة
+                            ('LINEABOVE', (0, 1), (-1, 1), 1, colors.black),
+                            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                            ('TOPPADDING', (0, 0), (-1, -1), 0),
+                            ('BOTTOMPADDING', (0, 0), (-1, -1), 0),
+                            ('LEFTPADDING', (0, 0), (-1, -1), 5),
+                            ('RIGHTPADDING', (0, 0), (-1, -1), 5),
+                        ]))
+                        
+                    else:
+                        # إذا لم توجد صورة المستر، نستخدم تصميم بديل
+                        card_content = []
+                        card_content.append(card_title)
+                        card_content.append(Spacer(1, 0.3*cm))
+                        card_content.append(code_paragraph)
+                        card_content.append(Spacer(1, 0.2*cm))
+                        
+                        if student_paragraph:
+                            card_content.append(student_paragraph)
+                        
+                        card_content.append(info_paragraph)
+                        
+                        # إنشاء جدول للبطاقة مع حدود وتظليل محسن
+                        card_table = Table([[cell] for cell in card_content], colWidths=[8.5*cm])
+                        card_table.setStyle(TableStyle([
+                            ('BACKGROUND', (0, 0), (0, 0), colors.lightblue),  # لون خلفية العنوان
+                            ('TEXTCOLOR', (0, 0), (0, 0), colors.white),  # لون نص العنوان
+                            ('BOX', (0, 0), (-1, -1), 2, colors.black),  # إطار أكثر سماكة
+                            ('LINEBELOW', (0, 0), (-1, 0), 1, colors.black),  # خط تحت العنوان
+                            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                            ('TOPPADDING', (0, 0), (-1, -1), 5),
+                            ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
+                            ('LEFTPADDING', (0, 0), (-1, -1), 10),
+                            ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+                        ]))
                     
                     card_row.append(card_table)
                 else:
