@@ -58,6 +58,27 @@
                         {% endif %}
                     </div>
                     
+                    <div class="mb-3">
+                        <div class="form-check">
+                            {{ form.requires_code(class="form-check-input") }}
+                            {{ form.requires_code.label(class="form-check-label") }}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.points_cost.label(class="form-label") }}
+                        {% if form.points_cost.errors %}
+                            {{ form.points_cost(class="form-control is-invalid", type="number", min="0") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.points_cost.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.points_cost(class="form-control", type="number", min="0", placeholder="Enter video cost in points") }}
+                        {% endif %}
+                    </div>
+                    
                     <div class="d-grid gap-2">
                         {{ form.submit(class="btn btn-primary") }}
                         <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary">Cancel</a>

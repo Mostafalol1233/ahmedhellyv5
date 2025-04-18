@@ -625,7 +625,8 @@ def upload_video():
             title=form.title.data,
             description=form.description.data,
             uploaded_by=current_user.id,
-            requires_code=form.requires_code.data
+            requires_code=form.requires_code.data,
+            points_cost=form.points_cost.data
         )
 
         # معالجة رفع الفيديو كملف أو إضافة رابط
