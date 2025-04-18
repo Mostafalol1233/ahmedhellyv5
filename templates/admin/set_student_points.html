@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}تحديد رصيد نقاط الطالب{% endblock %}
+
+{% block content %}
+<div class="container mt-5 text-right">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h2 class="mb-0">تحديد رصيد نقاط للطالب: {{ student.full_name }}</h2>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('admin.set_student_points', user_id=student.id) }}">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="alert alert-info">
+                            <h5>معلومات الطالب:</h5>
+                            <p><strong>اسم المستخدم:</strong> {{ student.username }}</p>
+                            <p><strong>الاسم الكامل:</strong> {{ student.full_name }}</p>
+                            <p><strong>نوع الحساب:</strong> طالب</p>
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="current_points">الرصيد الحالي:</label>
+                            <div class="input-group">
+                                {{ form.current_points(class="form-control bg-light") }}
+                                <span class="input-group-text">نقطة</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="points">الرصيد الجديد:</label>
+                            <div class="input-group">
+                                {{ form.points(class="form-control", placeholder="أدخل الرصيد الجديد", autofocus=true) }}
+                                <span class="input-group-text">نقطة</span>
+                            </div>
+                            {% if form.points.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.points.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="notes">ملاحظات (اختياري):</label>
+                            {{ form.notes(class="form-control", rows=3, placeholder="أدخل ملاحظات حول سبب تغيير الرصيد") }}
+                            {% if form.notes.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.notes.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group d-flex justify-content-between">
+                            <a href="{{ url_for('admin.users_list') }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-right ml-1"></i> العودة للقائمة
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-save ml-1"></i> {{ form.submit.label.text }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h3 class="mb-0">معلومات إضافية</h3>
+                </div>
+                <div class="card-body">
+                    <p>
+                        <i class="fas fa-info-circle text-info"></i>
+                        يمكنك تحديد عدد النقاط الجديد للطالب بدلاً من تصفير النقاط.
+                    </p>
+                    <p>
+                        <i class="fas fa-history text-secondary"></i>
+                        سيتم تسجيل هذه العملية في سجل النظام مع إمكانية الرجوع إليها لاحقاً.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

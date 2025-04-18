@@ -212,6 +212,25 @@ class PointTransfer(db.Model):
     
     def __repr__(self):
         return f'<PointTransfer {self.points} points to student {self.student_id}>'
+        
+class PointsLog(db.Model):
+    __tablename__ = 'points_logs'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    admin_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    old_points = db.Column(db.Integer, nullable=False)
+    new_points = db.Column(db.Integer, nullable=False)
+    action = db.Column(db.String(50), nullable=False)  # 'set_points', 'reset_points', 'add_points', etc.
+    notes = db.Column(db.Text, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # العلاقات
+    user = db.relationship('User', foreign_keys=[user_id], backref='points_logs')
+    admin = db.relationship('User', foreign_keys=[admin_id], backref='admin_points_logs')
+    
+    def __repr__(self):
+        return f'<PointsLog {self.action} for user {self.user_id} by admin {self.admin_id}>'
 
 class PaymentPlan(db.Model):
     """Payment plan model for defining available plans"""

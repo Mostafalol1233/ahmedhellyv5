@@ -57,8 +57,11 @@
                                         <a href="{{ url_for('admin.add_points', user_id=user.id) }}" class="btn btn-sm btn-success">
                                             <i class="fa fa-plus"></i> إضافة نقاط
                                         </a>
+                                        <a href="{{ url_for('admin.set_student_points', user_id=user.id) }}" class="btn btn-sm btn-primary">
+                                            <i class="fa fa-edit"></i> تعديل النقاط
+                                        </a>
                                         <a href="{{ url_for('admin.reset_student_points', user_id=user.id) }}" class="btn btn-sm btn-warning" onclick="return confirm('هل أنت متأكد من إعادة تعيين نقاط هذا الطالب إلى صفر؟');">
-                                            <i class="fa fa-refresh"></i> إعادة تعيين النقاط
+                                            <i class="fa fa-refresh"></i> تصفير النقاط
                                         </a>
                                         {% endif %}
                                     </td>

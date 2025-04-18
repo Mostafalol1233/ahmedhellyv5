@@ -28,6 +28,15 @@ class TransferPointsForm(FlaskForm):
         NumberRange(min=1, message='يجب أن يكون عدد النقاط أكبر من صفر')
     ])
     submit = SubmitField('تحويل النقاط')
+    
+class SetPointsForm(FlaskForm):
+    current_points = IntegerField('الرصيد الحالي', render_kw={'readonly': True})
+    points = IntegerField('الرصيد الجديد', validators=[
+        DataRequired(message='يجب إدخال عدد النقاط'),
+        NumberRange(min=0, message='يجب أن يكون عدد النقاط أكبر من أو يساوي صفر')
+    ])
+    notes = TextAreaField('ملاحظات', validators=[Optional(), Length(max=200)])
+    submit = SubmitField('تحديث رصيد النقاط')
 
 class AddPointsForm(FlaskForm):
     points = IntegerField('عدد النقاط', validators=[DataRequired(), NumberRange(min=1)])
