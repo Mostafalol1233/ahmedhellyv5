@@ -1,0 +1,28 @@
+# قاعدة البيانات والتطبيق
+flask>=3.1.0
+flask-sqlalchemy>=3.1.1
+sqlalchemy>=2.0.39
+psycopg2-binary>=2.9.10
+pymysql>=1.1.1
+gunicorn>=23.0.0
+
+# المصادقة والنماذج
+flask-login>=0.6.3
+flask-wtf>=1.2.2
+wtforms>=3.2.1
+werkzeug>=3.1.3
+email-validator>=2.2.0
+
+# معالجة ملفات PDF و Word
+pypdf>=4.0.0
+python-docx>=1.0.0
+
+# إنشاء تقارير PDF
+reportlab>=4.0.0
+
+# دمج خدمات خارجية
+openai==0.28
+stripe>=8.0.0
+twilio>=8.0.0
+requests>=2.31.0
+python-dotenv>=1.0.0

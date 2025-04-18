@@ -1,79 +1,114 @@
-# Vercel Deployment Guide
+# دليل نشر التطبيق على Vercel
 
-This guide provides detailed instructions for deploying the Educational Platform on Vercel.
+هذا الدليل يشرح خطوات نشر تطبيق Flask على منصة Vercel.
 
-## Prerequisites
+## متطلبات مسبقة
 
-Before deploying to Vercel, make sure you have the following:
+1. حساب على Vercel [https://vercel.com/signup](https://vercel.com/signup)
+2. تطبيق Flask جاهز للنشر
+3. حساب GitHub (اختياري ولكن مفضل)
 
-1. A [Vercel account](https://vercel.com/signup)
-2. The [Vercel CLI](https://vercel.com/download) installed (optional, for local development)
-3. Required API keys set up:
-   - Stripe API keys for payment processing
-   - Twilio API keys for SMS functionality
-   - OpenAI API key (if using AI features)
-4. A database service (PostgreSQL) ready to use
+## إعداد التطبيق
 
-## Step 1: Prepare Your Project
+1. تأكد من وجود الملفات التالية في مشروعك:
 
-1. Make sure your code is ready for deployment
-2. Run the Vercel setup script:
-   ```
+   - `main.py` - الملف الرئيسي للتطبيق
+   - `vercel.json` - ملف التكوين الخاص بـ Vercel
+   - `requirements.txt` - قائمة المكتبات المطلوبة
+
+2. قم بتشغيل سكريبت إعداد Vercel (اختياري):
+
+   ```bash
    python vercel_setup.py
    ```
-3. This script will:
-   - Ensure all required folders exist
-   - Create a `.vercelignore` file
-   - Ensure `requirements.txt` is up-to-date
-   - Check for required environment variables
 
-## Step 2: Set up a Database
+3. تأكد من أن هيكل المشروع يتبع الشكل التالي:
 
-1. Create a PostgreSQL database with your preferred provider (e.g., Railway, Supabase, Render, Neon)
-2. Get the database connection URL in the format:
    ```
-   postgresql://username:password@host:port/database
+   /
+   ├── main.py           # نقطة دخول التطبيق
+   ├── app.py           # ملف التكوين والإعداد
+   ├── routes.py         # مسارات التطبيق
+   ├── models.py         # تعريفات قاعدة البيانات
+   ├── static/           # الملفات الثابتة
+   ├── templates/        # قوالب HTML
+   ├── vercel.json       # تكوين Vercel
+   ├── requirements.txt  # المكتبات المطلوبة
+   └── ...
    ```
 
-## Step 3: Deploy to Vercel
+## خطوات النشر
 
-### Option 1: Deploy via Git Integration
+### 1. رفع المشروع على GitHub (طريقة مفضلة)
 
-1. Push your project to a Git repository (GitHub, GitLab, or Bitbucket)
-2. Visit [Vercel Dashboard](https://vercel.com/dashboard)
-3. Click "Add New" and select "Project"
-4. Select your repository
-5. Configure the project:
-   - Framework Preset: Other
-   - Build Command: Leave empty
-   - Output Directory: Leave empty
-   - Root Directory: Leave as `.`
-6. Add Environment Variables:
-   - `DATABASE_URL`: Your PostgreSQL connection URL
-   - `SESSION_SECRET`: A strong random string for session security
-   - `STRIPE_SECRET_KEY`: Your Stripe secret key
-   - `STRIPE_PUBLISHABLE_KEY`: Your Stripe publishable key
-   - `STRIPE_WEBHOOK_SECRET`: Your Stripe webhook secret (optional)
-   - `TWILIO_ACCOUNT_SID`: Your Twilio account SID
-   - `TWILIO_AUTH_TOKEN`: Your Twilio auth token
-   - `TWILIO_PHONE_NUMBER`: Your Twilio phone number
-   - `OPENAI_API_KEY`: Your OpenAI API key (if using AI features)
-7. Click "Deploy"
+1. قم بإنشاء مستودع جديد على GitHub
+2. قم برفع مشروعك إليه:
 
-## Troubleshooting
+   ```bash
+   git init
+   git add .
+   git commit -m "Initial commit"
+   git remote add origin https://github.com/username/project-name.git
+   git push -u origin main
+   ```
 
-### Common Issues
+### 2. النشر على Vercel
 
-1. **Database Connection Errors**:
-   - Check that your `DATABASE_URL` is correctly formatted
-   - Ensure your database provider allows connections from Vercel IP addresses
+#### باستخدام واجهة الويب
 
-2. **Missing Environment Variables**:
-   - Make sure all required environment variables are set in the Vercel dashboard
-   - Variables set locally will not be available in the deployment
+1. قم بتسجيل الدخول إلى [Vercel](https://vercel.com/)
+2. انقر على "New Project"
+3. اختر مستودع GitHub الذي رفعت إليه المشروع
+4. في صفحة تكوين المشروع:
+   - اختر "Other" من قائمة Framework Preset
+   - اترك Root Directory كـ `./`
+   - اترك Build Command فارغًا (أو `pip install -r requirements.txt` إذا كان مطلوبًا)
+   - اترك Output Directory فارغًا
+5. انتقل إلى قسم Environment Variables وأضف المتغيرات التالية:
+   - `DATABASE_URL`: رابط قاعدة البيانات PostgreSQL
+   - `SESSION_SECRET`: مفتاح عشوائي لتأمين جلسات المستخدمين
+6. انقر على "Deploy"
 
-3. **500 Internal Server Errors**:
-   - Check the Vercel logs for detailed error messages
-   - Common causes are database connection issues or missing environment variables
+#### باستخدام CLI (اختياري)
 
-For more information, refer to the [Vercel Documentation](https://vercel.com/docs).
+1. قم بتثبيت Vercel CLI:
+
+   ```bash
+   npm i -g vercel
+   ```
+
+2. قم بتسجيل الدخول:
+
+   ```bash
+   vercel login
+   ```
+
+3. انتقل إلى مجلد المشروع ونفذ الأمر:
+
+   ```bash
+   vercel
+   ```
+
+## بعد النشر
+
+1. قم بزيارة رابط المشروع المنشور للتأكد من عمله بشكل صحيح
+2. إذا كنت تستخدم قاعدة بيانات، تأكد من تهيئتها باستخدام سكريبت الهجرة:
+
+   ```python
+   # يمكن تنفيذ هذا من لوحة تحكم Vercel Functions
+   from db_migrate import run_migrations
+   run_migrations()
+   ```
+
+3. تواصل مع فريق Vercel إذا واجهت أي مشكلات في النشر
+
+## ملاحظات مهمة
+
+1. تأكد من أن تطبيق Flask يستخدم المتغيرات البيئية للإعدادات الحساسة
+2. تجنب الوصول المباشر لنظام الملفات - Vercel يعمل كـ serverless وله قيود على الكتابة
+3. استخدم قاعدة بيانات خارجية (مثل PostgreSQL من Supabase أو Railway) بدلاً من SQLite
+
+## المراجع
+
+- [وثائق Vercel Python](https://vercel.com/docs/functions/serverless-functions/runtimes/python)
+- [دليل نشر تطبيقات Flask على Vercel](https://vercel.com/guides/deploying-flask-with-vercel)

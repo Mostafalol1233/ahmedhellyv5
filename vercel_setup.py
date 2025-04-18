@@ -1,81 +1,152 @@
 #!/usr/bin/env python
-'''
-Setup script for Vercel deployment.
-This script creates the necessary folders and files for Vercel deployment.
-'''
+"""
+سكريبت إعداد لنشر التطبيق على Vercel.
+يقوم هذا السكريبت بإنشاء المجلدات والملفات اللازمة لنشر التطبيق على Vercel.
+"""
 
 import os
 import sys
 import json
-from dotenv import load_dotenv
+import logging
+from pathlib import Path
 
-# Load environment variables from .env file if it exists
-load_dotenv()
+# إعداد التسجيل
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+# المسار الحالي للتطبيق
+BASE_DIR = Path(__file__).resolve().parent
+
+def setup_vercel_environment():
+    """إعداد بيئة Vercel"""
+    try:
+        # إنشاء ملف .env للتطوير المحلي
+        env_file = BASE_DIR / '.env'
+        if not env_file.exists():
+            with open(env_file, 'w', encoding='utf-8') as f:
+                f.write("""# بيئة التطوير المحلية
+DATABASE_URL=sqlite:///instance/app.db
+SESSION_SECRET=your-local-secret-key-change-this-in-production
+FLASK_ENV=development
+""")
+            logger.info("تم إنشاء ملف .env")
+        
+        # التحقق من وجود ملف vercel.json
+        vercel_json = BASE_DIR / 'vercel.json'
+        if not vercel_json.exists():
+            # إنشاء ملف vercel.json إذا لم يكن موجودًا
+            vercel_config = {
+                "version": 2,
+                "builds": [
+                    {
+                        "src": "main.py",
+                        "use": "@vercel/python",
+                        "config": {
+                            "runtime": "python3.9",
+                            "maxLambdaSize": "15mb"
+                        }
+                    }
+                ],
+                "routes": [
+                    {
+                        "src": "/(.*)",
+                        "dest": "main.py"
+                    }
+                ],
+                "env": {
+                    "PYTHONUNBUFFERED": "1"
+                }
+            }
+            
+            with open(vercel_json, 'w', encoding='utf-8') as f:
+                json.dump(vercel_config, f, indent=2)
+            logger.info("تم إنشاء ملف vercel.json")
+        
+        # التأكد من وجود مجلد للملفات الثابتة
+        static_dir = BASE_DIR / 'static'
+        if not static_dir.exists():
+            os.makedirs(static_dir)
+            logger.info("تم إنشاء مجلد static")
+        
+        # إنشاء ملف اختبار لضمان نشر المجلد
+        static_test_file = static_dir / '.vercel_static_files'
+        if not static_test_file.exists():
+            with open(static_test_file, 'w', encoding='utf-8') as f:
+                f.write("# هذا الملف موجود لضمان نشر مجلد static على Vercel")
+        
+        logger.info("تم إكمال إعداد البيئة بنجاح!")
+        return True
+        
+    except Exception as e:
+        logger.error(f"حدث خطأ أثناء إعداد البيئة: {str(e)}")
+        return False
+
+def verify_requirements():
+    """التحقق من وجود المكتبات المطلوبة للنشر"""
+    try:
+        # قائمة المكتبات الأساسية المطلوبة
+        required_packages = [
+            'flask', 'flask-sqlalchemy', 'flask-login', 'flask-wtf', 
+            'gunicorn', 'psycopg2-binary', 'requests'
+        ]
+        
+        # إختبار استيراد كل مكتبة
+        missing_packages = []
+        for package in required_packages:
+            package_name = package.replace('-', '_')
+            try:
+                __import__(package_name)
+            except ImportError:
+                missing_packages.append(package)
+        
+        if missing_packages:
+            logger.warning(f"المكتبات التالية مفقودة ويجب تثبيتها: {', '.join(missing_packages)}")
+            return False
+        
+        logger.info("جميع المكتبات المطلوبة متوفرة!")
+        return True
+            
+    except Exception as e:
+        logger.error(f"حدث خطأ أثناء التحقق من المكتبات: {str(e)}")
+        return False
 
 def main():
-    """Main function to setup Vercel deployment"""
-    print("Setting up Vercel deployment...")
+    """الوظيفة الرئيسية للسكريبت"""
+    logger.info("بدء إعداد Vercel...")
     
-    # Ensure environment variables are set
-    required_env_vars = [
-        'DATABASE_URL',
-        'SESSION_SECRET',
-        'STRIPE_SECRET_KEY',
-        'STRIPE_PUBLISHABLE_KEY',
-        'TWILIO_ACCOUNT_SID',
-        'TWILIO_AUTH_TOKEN',
-        'TWILIO_PHONE_NUMBER'
-    ]
+    if setup_vercel_environment():
+        logger.info("تم إعداد بيئة Vercel بنجاح.")
+    else:
+        logger.error("فشل في إعداد بيئة Vercel.")
     
-    missing_vars = []
-    for var in required_env_vars:
-        if not os.getenv(var):
-            missing_vars.append(var)
+    if verify_requirements():
+        logger.info("تم التحقق من المكتبات المطلوبة بنجاح.")
+    else:
+        logger.warning("هناك مكتبات مفقودة. يرجى تثبيتها قبل النشر.")
     
-    if missing_vars:
-        print("Warning: The following environment variables are not set:")
-        for var in missing_vars:
-            print(f"  - {var}")
-        print("These variables will need to be configured in the Vercel dashboard.")
-    
-    # Create folders if they don't exist
-    folders = ['static', 'templates', 'instance']
-    for folder in folders:
-        if not os.path.exists(folder):
-            os.makedirs(folder)
-            print(f"Created folder: {folder}")
-    
-    # Ensure requirements.txt exists
-    if not os.path.exists('requirements.txt'):
-        with open('requirements.txt', 'w') as f:
-            f.write("flask\n")
-            f.write("flask-sqlalchemy\n")
-            f.write("flask-login\n")
-            f.write("flask-wtf\n")
-            f.write("gunicorn\n")
-            f.write("python-dotenv\n")
-            f.write("stripe\n")
-            f.write("twilio\n")
-            f.write("psycopg2-binary\n")
-            f.write("werkzeug\n")
-            f.write("openai\n")
-            f.write("email-validator\n")
-        print("Created requirements.txt file")
-    
-    # Create .vercelignore file
-    with open('.vercelignore', 'w') as f:
-        f.write("__pycache__\n")
-        f.write("*.pyc\n")
-        f.write(".env\n")
-        f.write(".git\n")
-        f.write(".gitignore\n")
-        f.write(".venv\n")
-        f.write("venv\n")
-        f.write("env\n")
-    print("Created .vercelignore file")
-    
-    print("Vercel setup completed successfully")
-    return 0
+    logger.info("""
+==============================================
+            إعداد Vercel مكتمل!
+==============================================
+
+للنشر على Vercel:
+
+1. قم بتسجيل الدخول إلى حسابك على Vercel
+2. انقر على "New Project"
+3. استورد المشروع من GitHub
+4. قم بتكوين المشروع:
+   - Framework Preset: Other
+   - Root Directory: ./
+   - Build Command: اترك فارغًا
+   - Output Directory: اترك فارغًا
+5. انقر على "Deploy"
+6. بعد النشر، يجب إعداد متغيرات البيئة:
+   - DATABASE_URL: رابط قاعدة البيانات PostgreSQL
+   - SESSION_SECRET: مفتاح سري للجلسات
+
+يمكنك استخدام سكريبت db_migrate.py لإنشاء جداول قاعدة البيانات بعد النشر.
+==============================================
+""")
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()
