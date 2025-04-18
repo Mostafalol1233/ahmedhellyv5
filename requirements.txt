@@ -26,3 +26,4 @@ python-docx
 docx
 flask-wtf
 requests
+openai
