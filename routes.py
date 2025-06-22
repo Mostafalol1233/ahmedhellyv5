@@ -631,12 +631,24 @@ def upload_video():
 
     form = VideoUploadForm()
     if form.validate_on_submit():
+        # Format title to include lesson information
+        title = form.title.data
+        if not title.lower().startswith(('lesson', 'درس')):
+            title = f"Lesson {form.lesson_number.data}: {title}"
+        
         video = Video(
-            title=form.title.data,
+            title=title,
             description=form.description.data,
             uploaded_by=current_user.id,
             requires_code=form.requires_code.data,
-            points_cost=form.points_cost.data
+            points_cost=form.points_cost.data,
+            lesson_number=form.lesson_number.data,
+            section=form.section.data,
+            video_order=form.video_order.data,
+            is_featured=form.is_featured.data,
+            thumbnail_url=form.thumbnail_url.data,
+            duration=form.duration.data,
+            tags=form.tags.data
         )
 
         # معالجة رفع الفيديو كملف أو إضافة رابط

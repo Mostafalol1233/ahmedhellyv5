@@ -68,6 +68,15 @@ class Video(db.Model):
     requires_code = db.Column(db.Boolean, default=True)  # هل تتطلب المحاضرة كود للوصول
     points_cost = db.Column(db.Integer, default=0)  # تكلفة الفيديو بالنقاط
     
+    # New fields for better organization
+    lesson_number = db.Column(db.Integer, default=1)  # رقم الدرس
+    section = db.Column(db.String(50), default='sec1')  # القسم (sec1, sec2, etc.)
+    is_featured = db.Column(db.Boolean, default=False)  # فيديو مميز
+    video_order = db.Column(db.Integer, default=0)  # ترتيب الفيديو في القسم
+    thumbnail_url = db.Column(db.String(200), nullable=True)  # رابط الصورة المصغرة
+    duration = db.Column(db.String(20), nullable=True)  # مدة الفيديو
+    tags = db.Column(db.String(200), nullable=True)  # العلامات للبحث
+    
     # Relationships
     comments = db.relationship('Comment', backref='video', lazy='dynamic', cascade='all, delete-orphan')
     

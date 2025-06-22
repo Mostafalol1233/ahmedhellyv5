@@ -19,6 +19,21 @@ class VideoUploadForm(FlaskForm):
     description = TextAreaField('الوصف', validators=[Optional(), Length(max=2000)])
     requires_code = BooleanField('يتطلب كود للمشاهدة', default=True)
     points_cost = IntegerField('سعر الفيديو بالنقاط', default=0, validators=[NumberRange(min=0)])
+    
+    # New fields for better organization
+    lesson_number = IntegerField('رقم الدرس', default=1, validators=[NumberRange(min=1)])
+    section = SelectField('القسم', choices=[
+        ('sec1', 'القسم الأول'),
+        ('sec2', 'القسم الثاني'), 
+        ('sec3', 'القسم الثالث'),
+        ('sec4', 'القسم الرابع')
+    ], default='sec1')
+    video_order = IntegerField('ترتيب الفيديو', default=1, validators=[NumberRange(min=1)])
+    is_featured = BooleanField('فيديو مميز', default=False)
+    thumbnail_url = StringField('رابط الصورة المصغرة', validators=[Optional(), URL()])
+    duration = StringField('مدة الفيديو (مثال: 15:30)', validators=[Optional(), Length(max=20)])
+    tags = StringField('الكلمات المفتاحية (مفصولة بفواصل)', validators=[Optional(), Length(max=200)])
+    
     submit = SubmitField('رفع الفيديو')
 
 class TransferPointsForm(FlaskForm):
@@ -48,6 +63,20 @@ class VideoEditForm(FlaskForm):
     description = TextAreaField('الوصف', validators=[Optional(), Length(max=2000)])
     requires_code = BooleanField('يتطلب كود للمشاهدة')
     points_cost = IntegerField('سعر الفيديو بالنقاط', default=0, validators=[NumberRange(min=0)])
+    
+    # New fields for better organization
+    lesson_number = IntegerField('رقم الدرس', default=1, validators=[NumberRange(min=1)])
+    section = SelectField('القسم', choices=[
+        ('sec1', 'القسم الأول'),
+        ('sec2', 'القسم الثاني'), 
+        ('sec3', 'القسم الثالث'),
+        ('sec4', 'القسم الرابع')
+    ], default='sec1')
+    video_order = IntegerField('ترتيب الفيديو', default=1, validators=[NumberRange(min=1)])
+    is_featured = BooleanField('فيديو مميز', default=False)
+    thumbnail_url = StringField('رابط الصورة المصغرة', validators=[Optional(), URL()])
+    duration = StringField('مدة الفيديو (مثال: 15:30)', validators=[Optional(), Length(max=20)])
+    tags = StringField('الكلمات المفتاحية (مفصولة بفواصل)', validators=[Optional(), Length(max=200)])
     submit = SubmitField('تحديث الفيديو')
 
 class PostForm(FlaskForm):
@@ -82,6 +111,35 @@ class StudentNoteForm(FlaskForm):
 class AIChatForm(FlaskForm):
     message = TextAreaField('سؤالك', validators=[DataRequired(), Length(min=3, max=1000)])
     submit = SubmitField('إرسال')
+
+class ProfileForm(FlaskForm):
+    username = StringField('اسم المستخدم', validators=[
+        DataRequired(message='يجب إدخال اسم المستخدم'),
+        Length(min=3, max=64, message='يجب أن يكون اسم المستخدم بين 3 و 64 حرفاً')
+    ])
+    full_name = StringField('الاسم الثلاثي', validators=[
+        DataRequired(message='يجب إدخال الاسم الثلاثي'),
+        Length(min=5, max=100, message='يجب أن يكون الاسم الثلاثي بين 5 و 100 حرف')
+    ])
+    email = StringField('البريد الإلكتروني', validators=[
+        Optional(),
+        Length(max=100, message='يجب أن لا يتجاوز البريد الإلكتروني 100 حرف'),
+        Email(message='يرجى إدخال بريد إلكتروني صحيح')
+    ])
+    phone = StringField('رقم الهاتف', validators=[
+        Optional(),
+        Length(max=20, message='يجب أن لا يتجاوز رقم الهاتف 20 رقماً')
+    ])
+    current_password = PasswordField('كلمة المرور الحالية', validators=[Optional()])
+    new_password = PasswordField('كلمة المرور الجديدة', validators=[
+        Optional(), 
+        Length(min=6, message='يجب أن تكون كلمة المرور 6 أحرف على الأقل')
+    ])
+    confirm_password = PasswordField('تأكيد كلمة المرور الجديدة', validators=[
+        Optional(),
+        EqualTo('new_password', message='كلمة المرور غير متطابقة')
+    ])
+    submit = SubmitField('حفظ التغييرات')
 
 class RegistrationForm(FlaskForm):
     username = StringField('اسم المستخدم', validators=[

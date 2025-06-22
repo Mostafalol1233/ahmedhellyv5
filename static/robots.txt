@@ -1,12 +1,13 @@
 User-agent: *
 Allow: /
-Disallow: /setup
-Disallow: /admin
-Disallow: /login
-Disallow: /logout
-Disallow: /profile
-Disallow: /messages
-Disallow: /ai_chat
-Disallow: /static/uploads/
+Allow: /login
+Allow: /register
+Disallow: /admin/
+Disallow: /student/
+Disallow: /api/
 
-Sitemap: https://your-domain.com/static/sitemap.xml
+# Sitemap
+Sitemap: /static/sitemap.xml
+
+# Crawl-delay
+Crawl-delay: 1

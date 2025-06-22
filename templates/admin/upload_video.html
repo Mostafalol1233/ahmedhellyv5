@@ -58,25 +58,121 @@
                         {% endif %}
                     </div>
                     
-                    <div class="mb-3">
-                        <div class="form-check">
-                            {{ form.requires_code(class="form-check-input") }}
-                            {{ form.requires_code.label(class="form-check-label") }}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.lesson_number.label(class="form-label") }}
+                            {% if form.lesson_number.errors %}
+                                {{ form.lesson_number(class="form-control is-invalid", type="number", min="1") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.lesson_number.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.lesson_number(class="form-control", type="number", min="1", placeholder="مثال: 1") }}
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.section.label(class="form-label") }}
+                            {% if form.section.errors %}
+                                {{ form.section(class="form-select is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.section.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.section(class="form-select") }}
+                            {% endif %}
                         </div>
                     </div>
-                    
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.video_order.label(class="form-label") }}
+                            {% if form.video_order.errors %}
+                                {{ form.video_order(class="form-control is-invalid", type="number", min="1") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.video_order.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.video_order(class="form-control", type="number", min="1", placeholder="ترتيب الفيديو في القسم") }}
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.points_cost.label(class="form-label") }}
+                            {% if form.points_cost.errors %}
+                                {{ form.points_cost(class="form-control is-invalid", type="number", min="0") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.points_cost.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.points_cost(class="form-control", type="number", min="0", placeholder="تكلفة الفيديو بالنقاط") }}
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.duration.label(class="form-label") }}
+                            {% if form.duration.errors %}
+                                {{ form.duration(class="form-control is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.duration.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.duration(class="form-control", placeholder="مثال: 15:30") }}
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.thumbnail_url.label(class="form-label") }}
+                            {% if form.thumbnail_url.errors %}
+                                {{ form.thumbnail_url(class="form-control is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.thumbnail_url.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.thumbnail_url(class="form-control", placeholder="رابط الصورة المصغرة") }}
+                            {% endif %}
+                        </div>
+                    </div>
+
                     <div class="mb-3">
-                        {{ form.points_cost.label(class="form-label") }}
-                        {% if form.points_cost.errors %}
-                            {{ form.points_cost(class="form-control is-invalid", type="number", min="0") }}
+                        {{ form.tags.label(class="form-label") }}
+                        {% if form.tags.errors %}
+                            {{ form.tags(class="form-control is-invalid") }}
                             <div class="invalid-feedback">
-                                {% for error in form.points_cost.errors %}
+                                {% for error in form.tags.errors %}
                                     {{ error }}
                                 {% endfor %}
                             </div>
                         {% else %}
-                            {{ form.points_cost(class="form-control", type="number", min="0", placeholder="Enter video cost in points") }}
+                            {{ form.tags(class="form-control", placeholder="دروس, تعليم, أحمد حلي") }}
                         {% endif %}
+                        <small class="form-text text-muted">اكتب الكلمات المفتاحية مفصولة بفواصل</small>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-check mb-3">
+                                {{ form.requires_code(class="form-check-input") }}
+                                {{ form.requires_code.label(class="form-check-label") }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-check mb-3">
+                                {{ form.is_featured(class="form-check-input") }}
+                                {{ form.is_featured.label(class="form-check-label") }}
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="d-grid gap-2">

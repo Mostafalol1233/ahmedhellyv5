@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+
+{% block title %}الدروس والفيديوهات - منصة الأستاذ أحمد حلي التعليمية{% endblock %}
+
+{% block description %}تصفح جميع الدروس والفيديوهات التعليمية المنظمة حسب الأقسام مع الأستاذ أحمد حلي{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar for sections -->
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5><i class="fas fa-list me-2"></i>الأقسام</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        <a href="?section=all" class="list-group-item list-group-item-action {% if not current_section or current_section == 'all' %}active{% endif %}">
+                            <i class="fas fa-play-circle me-2"></i>جميع الفيديوهات
+                            <span class="badge bg-secondary float-end">{{ total_videos }}</span>
+                        </a>
+                        {% for section, count in section_counts.items() %}
+                        <a href="?section={{ section }}" class="list-group-item list-group-item-action {% if current_section == section %}active{% endif %}">
+                            <i class="fas fa-folder me-2"></i>
+                            {% if section == 'sec1' %}القسم الأول
+                            {% elif section == 'sec2' %}القسم الثاني
+                            {% elif section == 'sec3' %}القسم الثالث
+                            {% elif section == 'sec4' %}القسم الرابع
+                            {% else %}{{ section }}{% endif %}
+                            <span class="badge bg-secondary float-end">{{ count }}</span>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Featured Videos -->
+            {% if featured_videos %}
+            <div class="card mt-3">
+                <div class="card-header bg-warning text-dark">
+                    <h6><i class="fas fa-star me-2"></i>فيديوهات مميزة</h6>
+                </div>
+                <div class="card-body p-0">
+                    {% for video in featured_videos[:3] %}
+                    <div class="d-flex align-items-center p-2 border-bottom">
+                        {% if video.thumbnail_url %}
+                        <img src="{{ video.thumbnail_url }}" alt="{{ video.title }}" class="rounded me-2" style="width: 50px; height: 35px; object-fit: cover;">
+                        {% else %}
+                        <div class="bg-primary rounded me-2 d-flex align-items-center justify-content-center" style="width: 50px; height: 35px;">
+                            <i class="fas fa-play text-white"></i>
+                        </div>
+                        {% endif %}
+                        <div class="flex-grow-1">
+                            <a href="{{ url_for('student.video', video_id=video.id) }}" class="text-decoration-none">
+                                <small class="fw-bold">{{ video.title[:30] }}{% if video.title|length > 30 %}...{% endif %}</small>
+                            </a>
+                            {% if video.duration %}
+                            <br><small class="text-muted"><i class="fas fa-clock me-1"></i>{{ video.duration }}</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Main content -->
+        <div class="col-md-9">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>
+                    {% if current_section == 'sec1' %}القسم الأول
+                    {% elif current_section == 'sec2' %}القسم الثاني
+                    {% elif current_section == 'sec3' %}القسم الثالث
+                    {% elif current_section == 'sec4' %}القسم الرابع
+                    {% else %}جميع الفيديوهات{% endif %}
+                </h2>
+                <span class="badge bg-info">{{ videos|length }} فيديو</span>
+            </div>
+
+            {% if videos %}
+            <div class="row">
+                {% for video in videos %}
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card h-100 video-card">
+                        {% if video.thumbnail_url %}
+                        <img src="{{ video.thumbnail_url }}" class="card-img-top" alt="{{ video.title }}" style="height: 200px; object-fit: cover;">
+                        {% else %}
+                        <div class="card-img-top bg-primary d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <i class="fas fa-play fa-3x text-white"></i>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="card-body">
+                            <h6 class="card-title">{{ video.title }}</h6>
+                            {% if video.description %}
+                            <p class="card-text text-muted small">{{ video.description[:100] }}{% if video.description|length > 100 %}...{% endif %}</p>
+                            {% endif %}
+                            
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                {% if video.duration %}
+                                <small class="text-muted">
+                                    <i class="fas fa-clock me-1"></i>{{ video.duration }}
+                                </small>
+                                {% endif %}
+                                {% if video.points_cost > 0 %}
+                                <span class="badge bg-warning text-dark">
+                                    <i class="fas fa-coins me-1"></i>{{ video.points_cost }} نقطة
+                                </span>
+                                {% else %}
+                                <span class="badge bg-success">مجاني</span>
+                                {% endif %}
+                            </div>
+                            
+                            {% if video.tags %}
+                            <div class="mb-2">
+                                {% for tag in video.tags.split(',')[:3] %}
+                                <span class="badge bg-light text-dark me-1">{{ tag.strip() }}</span>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="card-footer">
+                            <a href="{{ url_for('student.video', video_id=video.id) }}" class="btn btn-primary btn-sm w-100">
+                                <i class="fas fa-play me-1"></i>مشاهدة الدرس
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-video fa-3x text-muted mb-3"></i>
+                <h4>لا توجد فيديوهات متاحة</h4>
+                <p class="text-muted">لم يتم رفع أي فيديوهات في هذا القسم حتى الآن.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+.video-card {
+    transition: transform 0.2s;
+}
+
+.video-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Add SEO-friendly structured data
+const videoData = {
+    "@context": "https://schema.org",
+    "@type": "VideoObject",
+    "name": "{{ videos[0].title if videos }}",
+    "description": "{{ videos[0].description if videos }}",
+    "uploadDate": "{{ videos[0].created_at.isoformat() if videos }}",
+    "thumbnailUrl": "{{ videos[0].thumbnail_url if videos and videos[0].thumbnail_url }}",
+    "duration": "{{ videos[0].duration if videos and videos[0].duration }}"
+};
+
+if ({{ videos|length }} > 0) {
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.textContent = JSON.stringify(videoData);
+    document.head.appendChild(script);
+}
+</script>
+{% endblock %}
