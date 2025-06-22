@@ -1,71 +1,56 @@
 # منصة الأستاذ أحمد حلي التعليمية
-# Ahmed Helly Educational Platform
 
-A comprehensive educational platform built with Flask, featuring video content, interactive tests, messaging, and payment integration.
+منصة تعليمية متطورة مبنية بـ Next.js و TypeScript مع قاعدة بيانات PostgreSQL.
 
-## Quick Deploy
+## الميزات
 
-### One-Click Deploy to Vercel
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/your-username/your-repo)
+- نظام تسجيل دخول آمن للطلاب والمشرفين
+- لوحة تحكم للمشرفين لإدارة المحتوى
+- لوحة تحكم للطلاب لمتابعة التقدم
+- نظام اختبارات تفاعلي
+- إدارة الفيديوهات التعليمية
+- قاعدة بيانات PostgreSQL للأداء العالي
 
-### Deploy to Netlify
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/your-username/your-repo)
+## بيانات تسجيل الدخول الافتراضية
 
-## Features
+### المشرف
+- اسم المستخدم: `admin`
+- كلمة المرور: `password`
 
-- **User Management**: Role-based access (admin/student)
-- **Video Content**: Upload and streaming with access control
-- **Interactive Tests**: Multiple choice with automatic grading
-- **Messaging System**: Direct messaging between users
-- **Payment Integration**: Stripe for subscriptions
-- **SMS Notifications**: Twilio integration
-- **AI Chat**: OpenAI integration for assistance
-- **Multilingual**: Arabic and English support
+### الطالب
+- اسم المستخدم: `student`  
+- كلمة المرور: `password`
 
-## Quick Setup
+## التقنيات المستخدمة
 
-1. **Database**: Create a PostgreSQL database (recommend [Neon.tech](https://neon.tech))
-2. **Environment Variables**: Set `DATABASE_URL` and `SESSION_SECRET`
-3. **Deploy**: Use the buttons above or follow the deployment guide
+- Next.js 14
+- TypeScript
+- PostgreSQL
+- Drizzle ORM
+- Tailwind CSS
+- Radix UI
 
-## Local Development
+## التطوير
 
 ```bash
-# Install dependencies
-pip install -r requirements.txt
-
-# Set environment variables
-export DATABASE_URL="your-database-url"
-export SESSION_SECRET="your-secret-key"
-
-# Run the application
-python main.py
+npm run dev
 ```
 
-## Environment Variables
+## النشر على Vercel
 
-### Required
-- `DATABASE_URL`: PostgreSQL connection string
-- `SESSION_SECRET`: Random secret key for sessions
+1. ربط المشروع بـ GitHub
+2. إعداد متغيرات البيئة في Vercel:
+   - `DATABASE_URL`
+3. النشر تلقائياً عند الدفع للمستودع
 
-### Optional (for full features)
-- `OPENAI_API_KEY`: For AI chat features
-- `STRIPE_SECRET_KEY`: For payment processing
-- `STRIPE_PUBLISHABLE_KEY`: For payment forms
-- `TWILIO_ACCOUNT_SID`: For SMS notifications
-- `TWILIO_AUTH_TOKEN`: For SMS authentication
-- `TWILIO_PHONE_NUMBER`: Your Twilio phone number
+## هيكل المشروع
 
-## Documentation
-
-- [Deployment Guide](DEPLOYMENT_GUIDE.md) - Detailed deployment instructions
-- [Deployment Checklist](deployment-checklist.md) - Pre-deployment checklist
-- [Project Architecture](replit.md) - Technical documentation
-
-## Support
-
-For deployment issues, check the deployment logs in your platform dashboard and verify all environment variables are set correctly.
-
-## License
-
-This project is licensed under the MIT License.
+```
+/
+├── app/                    # Next.js App Router
+├── components/            # مكونات React
+├── lib/                   # وظائف مساعدة
+├── server/               # إعداد قاعدة البيانات
+├── shared/              # المخططات المشتركة
+└── public/             # الملفات الثابتة
+```
