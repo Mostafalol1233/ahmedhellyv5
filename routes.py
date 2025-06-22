@@ -2422,14 +2422,31 @@ def profile():
     form = ProfileForm()
 
     if request.method == 'GET':
+        form.username.data = current_user.username
         form.full_name.data = current_user.full_name
         form.email.data = current_user.email
         form.phone.data = current_user.phone
 
     if form.validate_on_submit():
+        # Check if username is changed and if it's unique
+        if form.username.data != current_user.username:
+            existing_user = User.query.filter_by(username=form.username.data).first()
+            if existing_user:
+                flash('اسم المستخدم موجود بالفعل. برجاء اختيار اسم آخر.', 'danger')
+                return render_template('profile.html', form=form, completed_attempts=[], tests={})
+        
+        current_user.username = form.username.data
         current_user.full_name = form.full_name.data
         current_user.email = form.email.data
         current_user.phone = form.phone.data
+        
+        # Handle password change
+        if form.new_password.data:
+            if form.current_password.data and current_user.check_password(form.current_password.data):
+                current_user.set_password(form.new_password.data)
+            else:
+                flash('كلمة المرور الحالية غير صحيحة.', 'danger')
+                return render_template('profile.html', form=form, completed_attempts=[], tests={})
 
         db.session.commit()
         flash('تم تحديث بياناتك الشخصية بنجاح.', 'success')

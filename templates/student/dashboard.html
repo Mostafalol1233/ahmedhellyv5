@@ -54,30 +54,40 @@
                 </div>
 
                 <!-- Action Buttons -->
-                <div class="row mt-3">
+                <div class="btn-group-modern row mt-3">
                     <div class="col-lg-3 col-md-6 mb-3">
-                        <a href="{{ url_for('student.view_notes') }}" class="btn btn-info btn-lg w-100 d-flex align-items-center justify-content-center">
-                            <i class="fas fa-sticky-note me-2"></i>ملاحظاتي الشخصية
+                        <a href="{{ url_for('student.view_notes') }}" class="btn-modern btn-info-modern btn-lg btn-block btn-pulse">
+                            <i class="fas fa-sticky-note"></i>ملاحظاتي الشخصية
                         </a>
                     </div>
                     <div class="col-lg-3 col-md-6 mb-3">
-                        <a href="{{ url_for('student.ai_chat') }}" class="btn btn-success btn-lg w-100 d-flex align-items-center justify-content-center">
-                            <i class="fas fa-robot me-2"></i>الدردشة الذكية
+                        <a href="{{ url_for('student.ai_chat') }}" class="btn-modern btn-success-modern btn-lg btn-block btn-pulse">
+                            <i class="fas fa-robot"></i>الدردشة الذكية
                         </a>
                     </div>
                     <div class="col-lg-3 col-md-6 mb-3">
-                        <a href="{{ url_for('student_tests.available_tests') }}" class="btn btn-danger btn-lg w-100 d-flex align-items-center justify-content-center">
-                            <i class="fas fa-tasks me-2"></i>الاختبارات المتاحة
+                        <a href="{{ url_for('student_tests.available_tests') }}" class="btn-modern btn-danger-modern btn-lg btn-block btn-pulse">
+                            <i class="fas fa-tasks"></i>الاختبارات المتاحة
                         </a>
                     </div>
                     <div class="col-lg-3 col-md-6 mb-3">
-                        <a href="{{ url_for('payment.pricing') }}" class="btn btn-primary btn-lg w-100 d-flex align-items-center justify-content-center">
-                            <i class="fas fa-credit-card me-2"></i>خطط الاشتراك
+                        <a href="{{ url_for('main.transfer_points') }}" class="btn-modern btn-admin btn-lg btn-block btn-pulse">
+                            <i class="fas fa-exchange-alt"></i>تحويل النقاط
                         </a>
                     </div>
                     <div class="col-lg-4 col-md-6 mb-3">
-                        <a href="#videos-section" class="btn btn-warning btn-lg w-100 d-flex align-items-center justify-content-center">
-                            <i class="fas fa-video me-2"></i>الفيديوهات التعليمية
+                        <a href="#videos-section" class="btn-modern btn-warning-modern btn-lg btn-block btn-pulse">
+                            <i class="fas fa-video"></i>الفيديوهات التعليمية
+                        </a>
+                    </div>
+                    <div class="col-lg-4 col-md-6 mb-3">
+                        <a href="{{ url_for('student.math_formulas') }}" class="btn-modern btn-purple-modern btn-lg btn-block btn-pulse">
+                            <i class="fas fa-calculator"></i>القوانين الرياضية
+                        </a>
+                    </div>
+                    <div class="col-lg-4 col-md-6 mb-3">
+                        <a href="{{ url_for('student.advanced_calculator') }}" class="btn-modern btn-teal-modern btn-lg btn-block btn-pulse">
+                            <i class="fas fa-square-root-alt"></i>الآلة الحاسبة المتقدمة
                         </a>
                     </div>
                 </div>
