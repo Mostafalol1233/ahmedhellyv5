@@ -1591,3 +1591,6 @@ def grade_short_answer(question, answer_text):
     normalized_correct = correct_answer.lower().strip()
     
     return normalized_answer == normalized_correct
+
+# إنشاء Blueprint للاختبارات
+test_bp = Blueprint('test', __name__)

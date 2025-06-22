@@ -1,35 +1,60 @@
-import { redirect } from 'next/navigation'
-import { LoginForm } from '@/components/login-form'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import React from 'react'
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <div className="w-full max-w-md space-y-8">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            منصة الأستاذ أحمد حلي
-          </h1>
-          <p className="text-gray-600">
-            منصة تعليمية متطورة للتعلم التفاعلي
+    <div style={{ padding: '2rem', maxWidth: '800px', margin: '0 auto' }}>
+      <h1 style={{ fontSize: '2.5rem', marginBottom: '1rem', color: '#333' }}>
+        منصة أحمد هلّي التعليمية
+      </h1>
+      <p style={{ fontSize: '1.2rem', marginBottom: '2rem', color: '#666' }}>
+        منصة تعليمية متقدمة متعددة اللغات تستخدم الذكاء الاصطناعي لإنشاء تجارب تعلم شخصية وتفاعلية
+      </p>
+      
+      <div style={{ display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))' }}>
+        <div style={{ padding: '1.5rem', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem', color: '#333' }}>للطلاب</h2>
+          <p style={{ marginBottom: '1rem', color: '#666' }}>
+            الوصول إلى المحتوى التعليمي والاختبارات التفاعلية
           </p>
+          <a href="/student" style={{ 
+            display: 'inline-block', 
+            padding: '0.5rem 1rem', 
+            backgroundColor: '#007bff', 
+            color: 'white', 
+            textDecoration: 'none', 
+            borderRadius: '4px' 
+          }}>
+            دخول الطلاب
+          </a>
         </div>
         
-        <Card>
-          <CardHeader>
-            <CardTitle>تسجيل الدخول</CardTitle>
-            <CardDescription>
-              أدخل بياناتك للوصول إلى المنصة التعليمية
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <LoginForm />
-          </CardContent>
-        </Card>
-        
-        <div className="text-center text-sm text-gray-600">
-          <p>© 2025 منصة الأستاذ أحمد حلي التعليمية. جميع الحقوق محفوظة.</p>
+        <div style={{ padding: '1.5rem', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem', color: '#333' }}>للإدارة</h2>
+          <p style={{ marginBottom: '1rem', color: '#666' }}>
+            إدارة المحتوى والطلاب والاختبارات
+          </p>
+          <a href="/admin" style={{ 
+            display: 'inline-block', 
+            padding: '0.5rem 1rem', 
+            backgroundColor: '#28a745', 
+            color: 'white', 
+            textDecoration: 'none', 
+            borderRadius: '4px' 
+          }}>
+            دخول الإدارة
+          </a>
         </div>
+      </div>
+      
+      <div style={{ marginTop: '3rem', padding: '1.5rem', backgroundColor: '#f8f9fa', borderRadius: '8px' }}>
+        <h3 style={{ fontSize: '1.3rem', marginBottom: '1rem', color: '#333' }}>المميزات الرئيسية</h3>
+        <ul style={{ listStyle: 'none', padding: 0 }}>
+          <li style={{ marginBottom: '0.5rem', color: '#666' }}>✓ واجهات تعلم تكيفية مدعومة بالذكاء الاصطناعي</li>
+          <li style={{ marginBottom: '0.5rem', color: '#666' }}>✓ نظام توصيات المحتوى الذكي</li>
+          <li style={{ marginBottom: '0.5rem', color: '#666' }}>✓ نظام اختبارات تفاعلي مع تصحيح تلقائي</li>
+          <li style={{ marginBottom: '0.5rem', color: '#666' }}>✓ أدوات إدارة المحتوى المرنة</li>
+          <li style={{ marginBottom: '0.5rem', color: '#666' }}>✓ نظام إدارة النقاط للمدراء</li>
+        </ul>
       </div>
     </div>
   )

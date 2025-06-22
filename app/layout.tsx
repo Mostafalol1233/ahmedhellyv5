@@ -1,12 +1,10 @@
+import React from 'react'
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
 import './globals.css'
 
-const inter = Inter({ subsets: ['latin'] })
-
 export const metadata: Metadata = {
-  title: 'منصة الأستاذ أحمد حلي التعليمية',
-  description: 'منصة تعليمية متطورة للتعلم التفاعلي والاختبارات الذكية',
+  title: 'منصة أحمد هلّي التعليمية',
+  description: 'منصة تعليمية متقدمة متعددة اللغات',
 }
 
 export default function RootLayout({
@@ -16,7 +14,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ar" dir="rtl">
-      <body className={inter.className}>{children}</body>
+      <body>{children}</body>
     </html>
   )
 }
