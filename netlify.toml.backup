@@ -1,0 +1,10 @@
+# Backup of original netlify.toml - use if Python approach fails
+
+[build]
+  publish = "static"
+  command = "echo 'Static site only'"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

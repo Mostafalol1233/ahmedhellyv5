@@ -1,13 +1,9 @@
 [build]
   publish = "static"
-  command = "pip install -r netlify/functions/requirements.txt"
-
-[build.environment]
-  PYTHON_VERSION = "3.10"
+  command = "python -m pip install --upgrade pip && pip install -r netlify/functions/requirements.txt"
 
 [functions]
-  directory = "netlify/functions"
-  node_bundler = "none"
+  runtime = "python3.9"
 
 [[redirects]]
   from = "/*"
