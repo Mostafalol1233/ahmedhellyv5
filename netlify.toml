@@ -1,6 +1,6 @@
 [build]
-  publish = "."
-  command = "python -m pip install --upgrade pip && pip install -r requirements.txt && cp _redirects static/"
+  publish = "static"
+  command = "python -m pip install --upgrade pip && pip install -r requirements.txt"
 
 [build.environment]
   PYTHON_VERSION = "3.11.13"
@@ -8,11 +8,6 @@
 [functions]
   directory = "netlify/functions"
 
-[[redirects]]
-  from = "/static/*"
-  to = "/static/:splat"
-  status = 200
-  
 [[redirects]]
   from = "/*"
   to = "/.netlify/functions/app"
