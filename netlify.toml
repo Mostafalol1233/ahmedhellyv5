@@ -1,6 +1,6 @@
 [build]
   publish = "static"
-  command = "pip install -r requirements.txt"
+  command = "python -m pip install --upgrade pip && pip install -r requirements.txt"
 
 [build.environment]
   PYTHON_VERSION = "3.11"
@@ -20,4 +20,3 @@
 
 [functions."app"]
   runtime = "python3.11"
-  included_files = ["**/*.py", "requirements.txt", "static/**", "templates/**", "instance/**"]
