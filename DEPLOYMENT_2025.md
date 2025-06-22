@@ -3,9 +3,9 @@
 ## Updated Configuration Files
 
 ### Vercel Configuration (vercel.json)
-- **Fixed**: Removed conflicting `builds` property
-- **Updated**: Using 2025 `functions` configuration only
-- **Runtime**: @vercel/python (latest stable version)
+- **Fixed**: Using proper versioned runtime @vercel/python@4.0.0
+- **Updated**: Back to builds configuration with correct versioning
+- **Runtime**: @vercel/python@4.0.0 (stable versioned runtime)
 - **Fixed**: Runtime versioning issue for 2025 compliance
 
 ### Netlify Configuration (netlify.toml)
