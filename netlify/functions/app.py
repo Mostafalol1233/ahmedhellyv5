@@ -4,76 +4,98 @@ import os
 # Add the project root to Python path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
 
-from main import app as flask_app
+# Import the Flask app once at module level
+from main import app
 
 def handler(event, context):
-    """Main Netlify function handler"""
+    """Netlify function handler - simplified approach"""
     
-    # Get request details
+    # Get request details from Netlify event
     path = event.get('path', '/')
-    method = event.get('httpMethod', 'GET').upper()
+    method = event.get('httpMethod', 'GET')
     headers = event.get('headers', {})
     query_params = event.get('queryStringParameters') or {}
     body = event.get('body', '')
     
-    # Handle base64 encoded body
-    if event.get('isBase64Encoded', False) and body:
-        import base64
-        body = base64.b64decode(body)
+    # Build query string
+    query_string = ''
+    if query_params:
+        query_string = '&'.join([f'{k}={v}' for k, v in query_params.items()])
     
-    # Create WSGI environ from Netlify event
-    environ = {
-        'REQUEST_METHOD': method,
-        'PATH_INFO': path,
-        'QUERY_STRING': '&'.join([f'{k}={v}' for k, v in query_params.items()]),
-        'CONTENT_TYPE': headers.get('content-type', ''),
-        'CONTENT_LENGTH': str(len(body)) if body else '0',
-        'SERVER_NAME': headers.get('host', 'localhost').split(':')[0],
-        'SERVER_PORT': '443' if headers.get('x-forwarded-proto') == 'https' else '80',
-        'wsgi.version': (1, 0),
-        'wsgi.url_scheme': headers.get('x-forwarded-proto', 'http'),
-        'wsgi.input': None,
-        'wsgi.errors': sys.stderr,
-        'wsgi.multithread': False,
-        'wsgi.multiprocess': True,
-        'wsgi.run_once': False,
-    }
-    
-    # Add headers to environ
-    for key, value in headers.items():
-        key = key.upper().replace('-', '_')
-        if key not in ('CONTENT_TYPE', 'CONTENT_LENGTH'):
-            environ[f'HTTP_{key}'] = value
-    
-    # Response data
-    response_status = None
-    response_headers = []
-    
-    def start_response(status, headers, exc_info=None):
-        nonlocal response_status, response_headers
-        response_status = status
-        response_headers = headers
-    
-    # Call Flask app
     try:
-        response_body = flask_app(environ, start_response)
-        
-        # Get response data
-        if hasattr(response_body, '__iter__'):
-            body_bytes = b''.join(response_body)
-        else:
-            body_bytes = response_body
+        # Use Flask test client for clean request handling
+        with app.test_client() as client:
             
-        # Return Netlify response format
-        return {
-            'statusCode': int(response_status.split()[0]),
-            'headers': dict(response_headers),
-            'body': body_bytes.decode('utf-8', errors='replace')
-        }
-        
+            # Make request to Flask app
+            if method == 'GET':
+                flask_response = client.get(path, query_string=query_string)
+            elif method == 'POST':
+                flask_response = client.post(path, data=body, query_string=query_string)
+            elif method == 'PUT':
+                flask_response = client.put(path, data=body, query_string=query_string)
+            elif method == 'DELETE':
+                flask_response = client.delete(path, query_string=query_string)
+            else:
+                # Default to GET for unknown methods
+                flask_response = client.get(path, query_string=query_string)
+            
+            # Extract response data
+            response_body = flask_response.get_data(as_text=True)
+            response_headers = dict(flask_response.headers)
+            response_status = flask_response.status_code
+            
+            # Ensure proper content type
+            if 'Content-Type' not in response_headers:
+                if path.endswith('.css'):
+                    response_headers['Content-Type'] = 'text/css'
+                elif path.endswith('.js'):
+                    response_headers['Content-Type'] = 'application/javascript'
+                else:
+                    response_headers['Content-Type'] = 'text/html; charset=utf-8'
+            
+            # Return Netlify function response
+            return {
+                'statusCode': response_status,
+                'headers': response_headers,
+                'body': response_body
+            }
+            
     except Exception as e:
+        # Simple error response
         return {
             'statusCode': 500,
             'headers': {'Content-Type': 'text/html; charset=utf-8'},
-            'body': f'<h1>خطأ في التطبيق</h1><p>Error: {str(e)}</p>'
+            'body': f'''
+            <!DOCTYPE html>
+            <html lang="ar" dir="rtl">
+            <head>
+                <meta charset="UTF-8">
+                <title>منصة الأستاذ أحمد حلي - خطأ مؤقت</title>
+                <style>
+                    body {{ 
+                        font-family: Arial, sans-serif; 
+                        text-align: center; 
+                        padding: 50px;
+                        background: #f4f4f4;
+                    }}
+                    .error {{ 
+                        background: white; 
+                        padding: 30px; 
+                        border-radius: 10px; 
+                        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                        max-width: 500px;
+                        margin: 0 auto;
+                    }}
+                </style>
+            </head>
+            <body>
+                <div class="error">
+                    <h2>منصة الأستاذ أحمد حلي التعليمية</h2>
+                    <p>عذراً، يحدث إعداد للمنصة حالياً</p>
+                    <p>الرجاء المحاولة خلال دقائق قليلة</p>
+                    <button onclick="location.reload()">إعادة المحاولة</button>
+                </div>
+            </body>
+            </html>
+            '''
         }
