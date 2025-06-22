@@ -1,9 +1,8 @@
 [build]
   publish = "static"
-  command = "python -m pip install --upgrade pip && pip install -r netlify/functions/requirements.txt"
 
 [functions]
-  runtime = "python3.9"
+  directory = "netlify/functions"
 
 [[redirects]]
   from = "/*"
