@@ -83,4 +83,5 @@ except ImportError as e:
         }
 
 # Export the handler for Netlify
-app = handler
+def app(event, context):
+    return handler(event, context)
