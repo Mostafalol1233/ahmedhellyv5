@@ -1,12 +1,20 @@
 [build]
   publish = "static"
-  command = "pip install -r requirements-netlify.txt"
+  command = "pip install -r requirements.txt"
 
 [build.environment]
   PYTHON_VERSION = "3.11"
 
 [functions]
   directory = "netlify/functions"
+  python_runtime = "python3.11"
+
+[functions.app]
+  included_files = ["**"]
+  python_runtime = "python3.11"
+
+[functions.app]
+  included_files = ["**"]
 
 [[redirects]]
   from = "/*"
