@@ -35,7 +35,7 @@ from payment_routes import payment_bp
 app.register_blueprint(main_bp)
 app.register_blueprint(admin_bp, url_prefix='/admin')
 app.register_blueprint(student_bp, url_prefix='/student')
-app.register_blueprint(test_bp, url_prefix='/test')
+app.register_blueprint(test_bp)
 app.register_blueprint(sms_bp, url_prefix='/sms')
 app.register_blueprint(payment_bp, url_prefix='/payment')
 

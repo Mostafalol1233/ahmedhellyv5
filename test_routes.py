@@ -377,7 +377,7 @@ def process_test_file(file, test_id):
         db.session.rollback()
         raise ValueError(f"حدث خطأ أثناء معالجة ملف الاختبار: {str(e)}")
 
-# إنشاء Blueprints للطلاب والمسؤولين
+# إنشاء Blueprints للطلاب والمسؤولين  
 admin_tests = Blueprint('admin_tests', __name__)
 student_tests = Blueprint('student_tests', __name__)
 
@@ -1592,5 +1592,9 @@ def grade_short_answer(question, answer_text):
     
     return normalized_answer == normalized_correct
 
-# إنشاء Blueprint للاختبارات
+# إنشاء Blueprint للاختبارات وتسجيل الروتات
 test_bp = Blueprint('test', __name__)
+
+# تسجيل روتات المدراء في البلوبرينت الرئيسي
+test_bp.register_blueprint(admin_tests)
+test_bp.register_blueprint(student_tests)
