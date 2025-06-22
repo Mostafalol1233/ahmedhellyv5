@@ -5,9 +5,8 @@
 ### Vercel Configuration (vercel.json)
 - **Fixed**: Removed conflicting `builds` property
 - **Updated**: Using 2025 `functions` configuration only
-- **Runtime**: Python 3.11
-- **Memory**: 512MB allocated
-- **Timeout**: 30 seconds max duration
+- **Runtime**: @vercel/python (latest stable version)
+- **Fixed**: Runtime versioning issue for 2025 compliance
 
 ### Netlify Configuration (netlify.toml)
 - **Fixed**: Removed deprecated `python_version` syntax
