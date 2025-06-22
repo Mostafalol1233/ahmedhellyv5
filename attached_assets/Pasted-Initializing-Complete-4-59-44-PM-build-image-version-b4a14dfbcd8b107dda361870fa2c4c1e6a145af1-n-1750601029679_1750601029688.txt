@@ -1,0 +1,359 @@
+Initializing
+Complete
+4:59:44 PM: build-image version: b4a14dfbcd8b107dda361870fa2c4c1e6a145af1 (noble)
+4:59:44 PM: buildbot version: b4a14dfbcd8b107dda361870fa2c4c1e6a145af1
+4:59:44 PM: Fetching cached dependencies
+4:59:44 PM: Failed to fetch cache, continuing with build
+4:59:44 PM: Starting to prepare the repo for build
+4:59:45 PM: No cached dependencies found. Cloning fresh repo
+4:59:45 PM: git clone --filter=blob:none https://github.com/Mostafalol1233/ahmedhellyv5
+4:59:45 PM: Preparing Git Reference refs/heads/main
+4:59:46 PM: Custom build command detected. Proceeding with the specified command: 'python -m pip install --upgrade pip && pip install -r requirements.txt'
+4:59:46 PM: Starting to install dependencies
+4:59:47 PM: mise python@3.11.13  install
+4:59:47 PM: mise python@3.11.13  download cpython-3.11.13+20250612-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+4:59:47 PM: mise python@3.11.13  extract cpython-3.11.13+20250612-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+4:59:48 PM: mise python@3.11.13  python --version
+4:59:48 PM: mise python@3.11.13  Python 3.11.13
+4:59:48 PM: mise python@3.11.13 ✓ installed
+4:59:48 PM: Python version set to 3.11
+4:59:48 PM: Installing pip dependencies from requirements.txt
+4:59:48 PM: Started restoring cached pip cache
+4:59:48 PM: Finished restoring cached pip cache
+4:59:49 PM: Collecting email-validator>=2.2.0 (from -r requirements.txt (line 2))
+4:59:49 PM:   Downloading email_validator-2.2.0-py3-none-any.whl.metadata (25 kB)
+4:59:49 PM: Collecting flask-wtf>=1.2.2 (from -r requirements.txt (line 3))
+4:59:49 PM:   Downloading flask_wtf-1.2.2-py3-none-any.whl.metadata (3.4 kB)
+4:59:49 PM: Collecting flask>=3.1.0 (from -r requirements.txt (line 4))
+4:59:49 PM:   Downloading flask-3.1.1-py3-none-any.whl.metadata (3.0 kB)
+4:59:49 PM: Collecting flask-sqlalchemy>=3.1.1 (from -r requirements.txt (line 5))
+4:59:49 PM:   Downloading flask_sqlalchemy-3.1.1-py3-none-any.whl.metadata (3.4 kB)
+4:59:49 PM: Collecting gunicorn>=23.0.0 (from -r requirements.txt (line 6))
+4:59:49 PM:   Downloading gunicorn-23.0.0-py3-none-any.whl.metadata (4.4 kB)
+4:59:49 PM: Collecting psycopg2-binary>=2.9.10 (from -r requirements.txt (line 7))
+4:59:49 PM:   Downloading psycopg2_binary-2.9.10-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.9 kB)
+4:59:49 PM: Collecting flask-login>=0.6.3 (from -r requirements.txt (line 8))
+4:59:49 PM:   Downloading Flask_Login-0.6.3-py3-none-any.whl.metadata (5.8 kB)
+4:59:50 PM: Collecting sqlalchemy>=2.0.39 (from -r requirements.txt (line 9))
+4:59:50 PM:   Downloading sqlalchemy-2.0.41-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (9.6 kB)
+4:59:50 PM: Collecting werkzeug>=3.1.3 (from -r requirements.txt (line 10))
+4:59:50 PM:   Downloading werkzeug-3.1.3-py3-none-any.whl.metadata (3.7 kB)
+4:59:50 PM: Collecting wtforms>=3.2.1 (from -r requirements.txt (line 11))
+4:59:50 PM:   Downloading wtforms-3.2.1-py3-none-any.whl.metadata (5.3 kB)
+4:59:50 PM: Collecting pymysql>=1.1.1 (from -r requirements.txt (line 12))
+4:59:50 PM:   Downloading PyMySQL-1.1.1-py3-none-any.whl.metadata (4.4 kB)
+4:59:50 PM: Collecting openai==0.28 (from -r requirements.txt (line 13))
+4:59:50 PM:   Downloading openai-0.28.0-py3-none-any.whl.metadata (13 kB)
+4:59:50 PM: Collecting reportlab (from -r requirements.txt (line 14))
+4:59:50 PM:   Downloading reportlab-4.4.2-py3-none-any.whl.metadata (1.8 kB)
+4:59:50 PM: Collecting stripe (from -r requirements.txt (line 16))
+4:59:50 PM:   Downloading stripe-12.2.0-py2.py3-none-any.whl.metadata (2.9 kB)
+4:59:50 PM: Collecting twilio (from -r requirements.txt (line 17))
+4:59:50 PM:   Downloading twilio-9.6.3-py2.py3-none-any.whl.metadata (13 kB)
+4:59:50 PM: Collecting python-dotenv (from -r requirements.txt (line 18))
+4:59:50 PM:   Downloading python_dotenv-1.1.0-py3-none-any.whl.metadata (24 kB)
+4:59:51 PM: Collecting pypdf (from -r requirements.txt (line 24))
+4:59:51 PM:   Downloading pypdf-5.6.1-py3-none-any.whl.metadata (7.2 kB)
+4:59:51 PM: Collecting python-docx (from -r requirements.txt (line 25))
+4:59:51 PM:   Downloading python_docx-1.2.0-py3-none-any.whl.metadata (2.0 kB)
+4:59:51 PM: Collecting docx (from -r requirements.txt (line 26))
+4:59:51 PM:   Downloading docx-0.2.4.tar.gz (54 kB)
+4:59:51 PM:   Installing build dependencies: started
+4:59:52 PM:   Installing build dependencies: finished with status 'done'
+4:59:52 PM:   Getting requirements to build wheel: started
+4:59:53 PM:   Getting requirements to build wheel: finished with status 'done'
+4:59:53 PM:   Preparing metadata (pyproject.toml): started
+4:59:53 PM:   Preparing metadata (pyproject.toml): finished with status 'done'
+4:59:53 PM: Collecting requests (from -r requirements.txt (line 28))
+4:59:53 PM:   Downloading requests-2.32.4-py3-none-any.whl.metadata (4.9 kB)
+4:59:53 PM: Collecting mangum (from -r requirements.txt (line 30))
+4:59:53 PM:   Downloading mangum-0.19.0-py3-none-any.whl.metadata (3.6 kB)
+4:59:53 PM: Collecting asgiref (from -r requirements.txt (line 33))
+4:59:53 PM:   Downloading asgiref-3.8.1-py3-none-any.whl.metadata (9.3 kB)
+4:59:53 PM: Collecting tqdm (from openai==0.28->-r requirements.txt (line 13))
+4:59:53 PM:   Downloading tqdm-4.67.1-py3-none-any.whl.metadata (57 kB)
+4:59:53 PM: Collecting aiohttp (from openai==0.28->-r requirements.txt (line 13))
+4:59:53 PM:   Downloading aiohttp-3.12.13-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (7.6 kB)
+4:59:53 PM: Collecting dnspython>=2.0.0 (from email-validator>=2.2.0->-r requirements.txt (line 2))
+4:59:54 PM:   Downloading dnspython-2.7.0-py3-none-any.whl.metadata (5.8 kB)
+4:59:54 PM: Collecting idna>=2.0.0 (from email-validator>=2.2.0->-r requirements.txt (line 2))
+4:59:54 PM:   Downloading idna-3.10-py3-none-any.whl.metadata (10 kB)
+4:59:54 PM: Collecting itsdangerous (from flask-wtf>=1.2.2->-r requirements.txt (line 3))
+4:59:54 PM:   Downloading itsdangerous-2.2.0-py3-none-any.whl.metadata (1.9 kB)
+4:59:54 PM: Collecting blinker>=1.9.0 (from flask>=3.1.0->-r requirements.txt (line 4))
+4:59:54 PM:   Downloading blinker-1.9.0-py3-none-any.whl.metadata (1.6 kB)
+4:59:54 PM: Collecting click>=8.1.3 (from flask>=3.1.0->-r requirements.txt (line 4))
+4:59:54 PM:   Downloading click-8.2.1-py3-none-any.whl.metadata (2.5 kB)
+4:59:54 PM: Collecting jinja2>=3.1.2 (from flask>=3.1.0->-r requirements.txt (line 4))
+4:59:54 PM:   Downloading jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+4:59:54 PM: Collecting markupsafe>=2.1.1 (from flask>=3.1.0->-r requirements.txt (line 4))
+4:59:54 PM:   Downloading MarkupSafe-3.0.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.0 kB)
+4:59:54 PM: Collecting packaging (from gunicorn>=23.0.0->-r requirements.txt (line 6))
+4:59:54 PM:   Downloading packaging-25.0-py3-none-any.whl.metadata (3.3 kB)
+4:59:54 PM: Collecting greenlet>=1 (from sqlalchemy>=2.0.39->-r requirements.txt (line 9))
+4:59:54 PM:   Downloading greenlet-3.2.3-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (4.1 kB)
+4:59:54 PM: Collecting typing-extensions>=4.6.0 (from sqlalchemy>=2.0.39->-r requirements.txt (line 9))
+4:59:54 PM:   Downloading typing_extensions-4.14.0-py3-none-any.whl.metadata (3.0 kB)
+4:59:54 PM: Collecting pillow>=9.0.0 (from reportlab->-r requirements.txt (line 14))
+4:59:54 PM:   Downloading pillow-11.2.1-cp311-cp311-manylinux_2_28_x86_64.whl.metadata (8.9 kB)
+4:59:55 PM: Collecting charset-normalizer (from reportlab->-r requirements.txt (line 14))
+4:59:55 PM:   Downloading charset_normalizer-3.4.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (35 kB)
+4:59:55 PM: Collecting PyJWT<3.0.0,>=2.0.0 (from twilio->-r requirements.txt (line 17))
+4:59:55 PM:   Downloading PyJWT-2.10.1-py3-none-any.whl.metadata (4.0 kB)
+4:59:55 PM: Collecting aiohttp-retry>=2.8.3 (from twilio->-r requirements.txt (line 17))
+4:59:55 PM:   Downloading aiohttp_retry-2.9.1-py3-none-any.whl.metadata (8.8 kB)
+4:59:55 PM: Collecting lxml>=3.1.0 (from python-docx->-r requirements.txt (line 25))
+4:59:55 PM:   Downloading lxml-5.4.0-cp311-cp311-manylinux_2_28_x86_64.whl.metadata (3.5 kB)
+4:59:55 PM: Collecting urllib3<3,>=1.21.1 (from requests->-r requirements.txt (line 28))
+4:59:55 PM:   Downloading urllib3-2.5.0-py3-none-any.whl.metadata (6.5 kB)
+4:59:55 PM: Collecting certifi>=2017.4.17 (from requests->-r requirements.txt (line 28))
+4:59:55 PM:   Downloading certifi-2025.6.15-py3-none-any.whl.metadata (2.4 kB)
+4:59:55 PM: Collecting aiohappyeyeballs>=2.5.0 (from aiohttp->openai==0.28->-r requirements.txt (line 13))
+4:59:55 PM:   Downloading aiohappyeyeballs-2.6.1-py3-none-any.whl.metadata (5.9 kB)
+4:59:55 PM: Collecting aiosignal>=1.1.2 (from aiohttp->openai==0.28->-r requirements.txt (line 13))
+4:59:55 PM:   Downloading aiosignal-1.3.2-py2.py3-none-any.whl.metadata (3.8 kB)
+4:59:55 PM: Collecting attrs>=17.3.0 (from aiohttp->openai==0.28->-r requirements.txt (line 13))
+4:59:55 PM:   Downloading attrs-25.3.0-py3-none-any.whl.metadata (10 kB)
+4:59:55 PM: Collecting frozenlist>=1.1.1 (from aiohttp->openai==0.28->-r requirements.txt (line 13))
+4:59:55 PM:   Downloading frozenlist-1.7.0-cp311-cp311-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (18 kB)
+4:59:56 PM: Collecting multidict<7.0,>=4.5 (from aiohttp->openai==0.28->-r requirements.txt (line 13))
+4:59:56 PM:   Downloading multidict-6.5.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (5.3 kB)
+4:59:56 PM: Collecting propcache>=0.2.0 (from aiohttp->openai==0.28->-r requirements.txt (line 13))
+4:59:56 PM:   Downloading propcache-0.3.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (12 kB)
+4:59:56 PM: Collecting yarl<2.0,>=1.17.0 (from aiohttp->openai==0.28->-r requirements.txt (line 13))
+4:59:56 PM:   Downloading yarl-1.20.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (73 kB)
+4:59:56 PM: Downloading openai-0.28.0-py3-none-any.whl (76 kB)
+4:59:56 PM: Downloading email_validator-2.2.0-py3-none-any.whl (33 kB)
+4:59:56 PM: Downloading flask_wtf-1.2.2-py3-none-any.whl (12 kB)
+4:59:56 PM: Downloading flask-3.1.1-py3-none-any.whl (103 kB)
+4:59:56 PM: Downloading flask_sqlalchemy-3.1.1-py3-none-any.whl (25 kB)
+4:59:56 PM: Downloading gunicorn-23.0.0-py3-none-any.whl (85 kB)
+4:59:56 PM: Downloading psycopg2_binary-2.9.10-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (3.0 MB)
+4:59:56 PM:    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.0/3.0 MB 61.4 MB/s eta 0:00:00
+4:59:56 PM: Downloading Flask_Login-0.6.3-py3-none-any.whl (17 kB)
+4:59:56 PM: Downloading sqlalchemy-2.0.41-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (3.3 MB)
+4:59:56 PM:    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.3/3.3 MB 110.2 MB/s eta 0:00:00
+4:59:56 PM: Downloading werkzeug-3.1.3-py3-none-any.whl (224 kB)
+4:59:56 PM: Downloading wtforms-3.2.1-py3-none-any.whl (152 kB)
+4:59:57 PM: Downloading PyMySQL-1.1.1-py3-none-any.whl (44 kB)
+4:59:57 PM: Downloading reportlab-4.4.2-py3-none-any.whl (2.0 MB)
+4:59:57 PM:    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.0/2.0 MB 88.1 MB/s eta 0:00:00
+4:59:57 PM: Downloading stripe-12.2.0-py2.py3-none-any.whl (1.6 MB)
+4:59:57 PM:    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.6/1.6 MB 54.4 MB/s eta 0:00:00
+4:59:57 PM: Downloading twilio-9.6.3-py2.py3-none-any.whl (1.9 MB)
+4:59:57 PM:    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.9/1.9 MB 55.8 MB/s eta 0:00:00
+4:59:57 PM: Downloading python_dotenv-1.1.0-py3-none-any.whl (20 kB)
+4:59:57 PM: Downloading pypdf-5.6.1-py3-none-any.whl (304 kB)
+4:59:57 PM: Downloading python_docx-1.2.0-py3-none-any.whl (252 kB)
+4:59:57 PM: Downloading requests-2.32.4-py3-none-any.whl (64 kB)
+4:59:57 PM: Downloading mangum-0.19.0-py3-none-any.whl (17 kB)
+4:59:57 PM: Downloading asgiref-3.8.1-py3-none-any.whl (23 kB)
+4:59:57 PM: Downloading aiohttp-3.12.13-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (1.7 MB)
+4:59:57 PM:    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.7/1.7 MB 91.6 MB/s eta 0:00:00
+4:59:57 PM: Downloading aiohttp_retry-2.9.1-py3-none-any.whl (10.0 kB)
+4:59:57 PM: Downloading blinker-1.9.0-py3-none-any.whl (8.5 kB)
+4:59:57 PM: Downloading certifi-2025.6.15-py3-none-any.whl (157 kB)
+4:59:57 PM: Downloading charset_normalizer-3.4.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (147 kB)
+4:59:57 PM: Downloading click-8.2.1-py3-none-any.whl (102 kB)
+4:59:57 PM: Downloading dnspython-2.7.0-py3-none-any.whl (313 kB)
+4:59:57 PM: Downloading greenlet-3.2.3-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (585 kB)
+4:59:57 PM:    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 585.5/585.5 kB 22.4 MB/s eta 0:00:00
+4:59:57 PM: Downloading idna-3.10-py3-none-any.whl (70 kB)
+4:59:57 PM: Downloading itsdangerous-2.2.0-py3-none-any.whl (16 kB)
+4:59:57 PM: Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
+4:59:57 PM: Downloading lxml-5.4.0-cp311-cp311-manylinux_2_28_x86_64.whl (4.9 MB)
+4:59:58 PM:    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.9/4.9 MB 9.0 MB/s eta 0:00:00
+4:59:58 PM: Downloading MarkupSafe-3.0.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (23 kB)
+4:59:58 PM: Downloading pillow-11.2.1-cp311-cp311-manylinux_2_28_x86_64.whl (4.6 MB)
+4:59:58 PM:    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.6/4.6 MB 98.5 MB/s eta 0:00:00
+4:59:58 PM: Downloading PyJWT-2.10.1-py3-none-any.whl (22 kB)
+4:59:58 PM: Downloading typing_extensions-4.14.0-py3-none-any.whl (43 kB)
+4:59:58 PM: Downloading urllib3-2.5.0-py3-none-any.whl (129 kB)
+4:59:58 PM: Downloading packaging-25.0-py3-none-any.whl (66 kB)
+4:59:58 PM: Downloading tqdm-4.67.1-py3-none-any.whl (78 kB)
+4:59:58 PM: Downloading aiohappyeyeballs-2.6.1-py3-none-any.whl (15 kB)
+4:59:58 PM: Downloading aiosignal-1.3.2-py2.py3-none-any.whl (7.6 kB)
+4:59:58 PM: Downloading attrs-25.3.0-py3-none-any.whl (63 kB)
+4:59:58 PM: Downloading frozenlist-1.7.0-cp311-cp311-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl (235 kB)
+4:59:58 PM: Downloading multidict-6.5.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (231 kB)
+4:59:58 PM: Downloading propcache-0.3.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (213 kB)
+4:59:58 PM: Downloading yarl-1.20.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (348 kB)
+4:59:58 PM: Building wheels for collected packages: docx
+4:59:58 PM:   Building wheel for docx (pyproject.toml): started
+4:59:58 PM:   Building wheel for docx (pyproject.toml): finished with status 'done'
+4:59:58 PM:   Created wheel for docx: filename=docx-0.2.4-py3-none-any.whl size=53929 sha256=e74cc0b30a9217847a63978eecfa1b6ae1f5fb545159ece6bbe08b64f84cf73b
+4:59:58 PM:   Stored in directory: /opt/buildhome/.cache/pip/wheels/c1/3e/c3/e81c11effd0be5658a035947c66792dd993bcff317eae0e1ed
+4:59:58 PM: Successfully built docx
+4:59:58 PM: Installing collected packages: urllib3, typing-extensions, tqdm, python-dotenv, pypdf, pymysql, PyJWT, psycopg2-binary, propcache, pillow, packaging, multidict, markupsafe, lxml, itsdangerous, idna, greenlet, frozenlist, dnspython, click, charset-normalizer, certifi, blinker, attrs, asgiref, aiohappyeyeballs, yarl, wtforms, werkzeug, sqlalchemy, requests, reportlab, python-docx, mangum, jinja2, gunicorn, email-validator, docx, aiosignal, stripe, flask, aiohttp, openai, flask-wtf, flask-sqlalchemy, flask-login, aiohttp-retry, twilio
+5:00:05 PM: Successfully installed PyJWT-2.10.1 aiohappyeyeballs-2.6.1 aiohttp-3.12.13 aiohttp-retry-2.9.1 aiosignal-1.3.2 asgiref-3.8.1 attrs-25.3.0 blinker-1.9.0 certifi-2025.6.15 charset-normalizer-3.4.2 click-8.2.1 dnspython-2.7.0 docx-0.2.4 email-validator-2.2.0 flask-3.1.1 flask-login-0.6.3 flask-sqlalchemy-3.1.1 flask-wtf-1.2.2 frozenlist-1.7.0 greenlet-3.2.3 gunicorn-23.0.0 idna-3.10 itsdangerous-2.2.0 jinja2-3.1.6 lxml-5.4.0 mangum-0.19.0 markupsafe-3.0.2 multidict-6.5.0 openai-0.28.0 packaging-25.0 pillow-11.2.1 propcache-0.3.2 psycopg2-binary-2.9.10 pymysql-1.1.1 pypdf-5.6.1 python-docx-1.2.0 python-dotenv-1.1.0 reportlab-4.4.2 requests-2.32.4 sqlalchemy-2.0.41 stripe-12.2.0 tqdm-4.67.1 twilio-9.6.3 typing-extensions-4.14.0 urllib3-2.5.0 werkzeug-3.1.3 wtforms-3.2.1 yarl-1.20.1
+5:00:05 PM: [notice] A new release of pip is available: 24.3.1 -> 25.1.1
+5:00:05 PM: [notice] To update, run: pip install --upgrade pip
+5:00:06 PM: Pip dependencies installed
+5:00:06 PM: Ruby version set to 3.4.3
+5:00:06 PM: Go version set to 1.24.4
+5:00:06 PM: Using PHP version
+5:00:08 PM: v22.16.0 is already installed.
+5:00:08 PM: Now using node v22.16.0 (npm v10.9.2)
+5:00:08 PM: Enabling Node.js Corepack
+5:00:08 PM: Started restoring cached build plugins
+5:00:08 PM: Finished restoring cached build plugins
+5:00:08 PM: Successfully installed dependencies
+5:00:08 PM: Starting build script
+5:00:09 PM: Detected 1 framework(s)
+5:00:09 PM: "expo" at version "unknown"
+5:00:09 PM: Section completed: initializing
+Building
+Complete
+5:00:11 PM: Netlify Build                                                 
+5:00:11 PM: ────────────────────────────────────────────────────────────────
+5:00:11 PM: ​
+5:00:11 PM: ❯ Version
+5:00:11 PM:   @netlify/build 33.4.6
+5:00:11 PM: ​
+5:00:11 PM: ❯ Flags
+5:00:11 PM:   accountId: 67af400f0481f020ffb84840
+5:00:11 PM:   baseRelDir: true
+5:00:11 PM:   buildId: 68580c4f4621c80008ab411e
+5:00:11 PM:   deployId: 68580c4f4621c80008ab4120
+5:00:11 PM: ​
+5:00:11 PM: ❯ Current directory
+5:00:11 PM:   /opt/build/repo
+5:00:11 PM: ​
+5:00:11 PM: ❯ Config file
+5:00:11 PM:   /opt/build/repo/netlify.toml
+5:00:11 PM: ​
+5:00:11 PM: ❯ Context
+5:00:11 PM:   production
+5:00:11 PM: ​
+5:00:11 PM: ❯ Installing extensions
+5:00:11 PM:    - neon
+5:01:01 PM: ​
+5:01:01 PM: ❯ Loading extensions
+5:01:01 PM:    - neon
+5:01:02 PM: ​
+5:01:02 PM: build.command from netlify.toml                               
+5:01:02 PM: ────────────────────────────────────────────────────────────────
+5:01:02 PM: ​
+5:01:02 PM: $ python -m pip install --upgrade pip && pip install -r requirements.txt
+5:01:03 PM: Requirement already satisfied: pip in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (24.3.1)
+5:01:03 PM: Collecting pip
+5:01:03 PM:   Downloading pip-25.1.1-py3-none-any.whl.metadata (3.6 kB)
+5:01:03 PM: Downloading pip-25.1.1-py3-none-any.whl (1.8 MB)
+5:01:03 PM:    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0.0/1.8 MB ? eta -:--:--
+5:01:03 PM:    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.8/1.8 MB 37.7 MB/s eta 0:00:00
+5:01:03 PM: Installing collected packages: pip
+5:01:03 PM:   Attempting uninstall: pip
+5:01:03 PM:     Found existing installation: pip 24.3.1
+5:01:03 PM:     Uninstalling pip-24.3.1:
+5:01:03 PM:       Successfully uninstalled pip-24.3.1
+5:01:04 PM: Successfully installed pip-25.1.1
+5:01:04 PM: Requirement already satisfied: email-validator>=2.2.0 in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from -r requirements.txt (line 2)) (2.2.0)
+5:01:04 PM: Requirement already satisfied: flask-wtf>=1.2.2 in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from -r requirements.txt (line 3)) (1.2.2)
+5:01:04 PM: Requirement already satisfied: flask>=3.1.0 in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from -r requirements.txt (line 4)) (3.1.1)
+5:01:04 PM: Requirement already satisfied: flask-sqlalchemy>=3.1.1 in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from -r requirements.txt (line 5)) (3.1.1)
+5:01:04 PM: Requirement already satisfied: gunicorn>=23.0.0 in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from -r requirements.txt (line 6)) (23.0.0)
+5:01:04 PM: Requirement already satisfied: psycopg2-binary>=2.9.10 in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from -r requirements.txt (line 7)) (2.9.10)
+5:01:04 PM: Requirement already satisfied: flask-login>=0.6.3 in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from -r requirements.txt (line 8)) (0.6.3)
+5:01:04 PM: Requirement already satisfied: sqlalchemy>=2.0.39 in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from -r requirements.txt (line 9)) (2.0.41)
+5:01:04 PM: Requirement already satisfied: werkzeug>=3.1.3 in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from -r requirements.txt (line 10)) (3.1.3)
+5:01:04 PM: Requirement already satisfied: wtforms>=3.2.1 in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from -r requirements.txt (line 11)) (3.2.1)
+5:01:04 PM: Requirement already satisfied: pymysql>=1.1.1 in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from -r requirements.txt (line 12)) (1.1.1)
+5:01:04 PM: Requirement already satisfied: openai==0.28 in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from -r requirements.txt (line 13)) (0.28.0)
+5:01:04 PM: Requirement already satisfied: reportlab in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from -r requirements.txt (line 14)) (4.4.2)
+5:01:04 PM: Requirement already satisfied: stripe in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from -r requirements.txt (line 16)) (12.2.0)
+5:01:04 PM: Requirement already satisfied: twilio in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from -r requirements.txt (line 17)) (9.6.3)
+5:01:04 PM: Requirement already satisfied: python-dotenv in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from -r requirements.txt (line 18)) (1.1.0)
+5:01:04 PM: Requirement already satisfied: pypdf in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from -r requirements.txt (line 24)) (5.6.1)
+5:01:04 PM: Requirement already satisfied: python-docx in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from -r requirements.txt (line 25)) (1.2.0)
+5:01:04 PM: Requirement already satisfied: docx in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from -r requirements.txt (line 26)) (0.2.4)
+5:01:04 PM: Requirement already satisfied: requests in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from -r requirements.txt (line 28)) (2.32.4)
+5:01:04 PM: Requirement already satisfied: mangum in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from -r requirements.txt (line 30)) (0.19.0)
+5:01:04 PM: Requirement already satisfied: asgiref in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from -r requirements.txt (line 33)) (3.8.1)
+5:01:04 PM: Requirement already satisfied: tqdm in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from openai==0.28->-r requirements.txt (line 13)) (4.67.1)
+5:01:04 PM: Requirement already satisfied: aiohttp in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from openai==0.28->-r requirements.txt (line 13)) (3.12.13)
+5:01:04 PM: Requirement already satisfied: dnspython>=2.0.0 in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from email-validator>=2.2.0->-r requirements.txt (line 2)) (2.7.0)
+5:01:04 PM: Requirement already satisfied: idna>=2.0.0 in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from email-validator>=2.2.0->-r requirements.txt (line 2)) (3.10)
+5:01:04 PM: Requirement already satisfied: itsdangerous in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from flask-wtf>=1.2.2->-r requirements.txt (line 3)) (2.2.0)
+5:01:04 PM: Requirement already satisfied: blinker>=1.9.0 in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from flask>=3.1.0->-r requirements.txt (line 4)) (1.9.0)
+5:01:04 PM: Requirement already satisfied: click>=8.1.3 in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from flask>=3.1.0->-r requirements.txt (line 4)) (8.2.1)
+5:01:04 PM: Requirement already satisfied: jinja2>=3.1.2 in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from flask>=3.1.0->-r requirements.txt (line 4)) (3.1.6)
+5:01:04 PM: Requirement already satisfied: markupsafe>=2.1.1 in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from flask>=3.1.0->-r requirements.txt (line 4)) (3.0.2)
+5:01:04 PM: Requirement already satisfied: packaging in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from gunicorn>=23.0.0->-r requirements.txt (line 6)) (25.0)
+5:01:04 PM: Requirement already satisfied: greenlet>=1 in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from sqlalchemy>=2.0.39->-r requirements.txt (line 9)) (3.2.3)
+5:01:04 PM: Requirement already satisfied: typing-extensions>=4.6.0 in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from sqlalchemy>=2.0.39->-r requirements.txt (line 9)) (4.14.0)
+5:01:04 PM: Requirement already satisfied: pillow>=9.0.0 in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from reportlab->-r requirements.txt (line 14)) (11.2.1)
+5:01:04 PM: Requirement already satisfied: charset-normalizer in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from reportlab->-r requirements.txt (line 14)) (3.4.2)
+5:01:04 PM: Requirement already satisfied: PyJWT<3.0.0,>=2.0.0 in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from twilio->-r requirements.txt (line 17)) (2.10.1)
+5:01:04 PM: Requirement already satisfied: aiohttp-retry>=2.8.3 in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from twilio->-r requirements.txt (line 17)) (2.9.1)
+5:01:04 PM: Requirement already satisfied: lxml>=3.1.0 in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from python-docx->-r requirements.txt (line 25)) (5.4.0)
+5:01:04 PM: Requirement already satisfied: urllib3<3,>=1.21.1 in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from requests->-r requirements.txt (line 28)) (2.5.0)
+5:01:04 PM: Requirement already satisfied: certifi>=2017.4.17 in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from requests->-r requirements.txt (line 28)) (2025.6.15)
+5:01:04 PM: Requirement already satisfied: aiohappyeyeballs>=2.5.0 in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from aiohttp->openai==0.28->-r requirements.txt (line 13)) (2.6.1)
+5:01:04 PM: Requirement already satisfied: aiosignal>=1.1.2 in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from aiohttp->openai==0.28->-r requirements.txt (line 13)) (1.3.2)
+5:01:04 PM: Requirement already satisfied: attrs>=17.3.0 in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from aiohttp->openai==0.28->-r requirements.txt (line 13)) (25.3.0)
+5:01:04 PM: Requirement already satisfied: frozenlist>=1.1.1 in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from aiohttp->openai==0.28->-r requirements.txt (line 13)) (1.7.0)
+5:01:04 PM: Requirement already satisfied: multidict<7.0,>=4.5 in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from aiohttp->openai==0.28->-r requirements.txt (line 13)) (6.5.0)
+5:01:04 PM: Requirement already satisfied: propcache>=0.2.0 in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from aiohttp->openai==0.28->-r requirements.txt (line 13)) (0.3.2)
+5:01:04 PM: Requirement already satisfied: yarl<2.0,>=1.17.0 in /opt/buildhome/.local/share/mise/installs/python/3.11.13/lib/python3.11/site-packages (from aiohttp->openai==0.28->-r requirements.txt (line 13)) (1.20.1)
+5:01:05 PM: ​
+5:01:05 PM: (build.command completed in 2.3s)
+5:01:05 PM: ​
+5:01:05 PM: Functions bundling                                            
+5:01:05 PM: ────────────────────────────────────────────────────────────────
+5:01:05 PM: ​
+5:01:05 PM: No Functions were found in netlify/functions directory
+5:01:05 PM: ​
+5:01:05 PM: (Functions bundling completed in 4ms)
+5:01:05 PM: ​
+5:01:05 PM: (Netlify Build completed in 54.6s)
+5:01:26 PM: Section completed: building
+5:01:46 PM: Finished processing build request in 2m1.726s
+Deploying
+Complete
+5:01:05 PM: Deploy site                                                   
+5:01:05 PM: ────────────────────────────────────────────────────────────────
+5:01:05 PM: ​
+5:01:05 PM: Starting to deploy site from 'static'
+5:01:05 PM: Calculating files to upload
+5:01:05 PM: 3 new file(s) to upload
+5:01:05 PM: 0 new function(s) to upload
+5:01:05 PM: Section completed: deploying
+5:01:05 PM: Site deploy was successfully initiated
+5:01:05 PM: ​
+5:01:05 PM: (Deploy site completed in 262ms)
+Cleanup
+Complete
+5:01:05 PM: Netlify Build Complete                                        
+5:01:05 PM: ────────────────────────────────────────────────────────────────
+5:01:05 PM: ​
+5:01:06 PM: Caching artifacts
+5:01:06 PM: Started saving build plugins
+5:01:06 PM: Finished saving build plugins
+5:01:06 PM: Started saving go cache
+5:01:07 PM: Finished saving go cache
+5:01:07 PM: Started saving python cache
+5:01:07 PM: Finished saving python cache
+5:01:07 PM: Started saving ruby cache
+5:01:26 PM: Finished saving ruby cache
+5:01:26 PM: Started saving pip cache
+5:01:26 PM: Finished saving pip cache
+5:01:26 PM: Started saving emacs cask dependencies
+5:01:26 PM: Finished saving emacs cask dependencies
+5:01:26 PM: Started saving maven dependencies
+5:01:26 PM: Finished saving maven dependencies
+5:01:26 PM: Started saving boot dependencies
+5:01:26 PM: Finished saving boot dependencies
+5:01:26 PM: Started saving rust rustup cache
+5:01:26 PM: Finished saving rust rustup cache
+5:01:26 PM: Build script success
+5:01:45 PM: Uploading Cache of size 298.1MB
+5:01:46 PM: Section completed: cleanup
+Post-processing
+Complete
+5:01:05 PM: Starting post processing
+5:01:05 PM: Skipping form detection
+5:01:05 PM: Post processing - header rules
+5:01:05 PM: Post processing done
+5:01:05 PM: Section completed: postprocessing
+5:01:05 PM: Post processing - redirect rules
+5:01:06 PM: Site is live ✨
