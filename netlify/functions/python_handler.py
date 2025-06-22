@@ -12,8 +12,25 @@ def main():
         # Read event data from stdin
         event_data = json.loads(sys.stdin.read())
         
-        # Import Flask app
+        # Set basic environment variables for production
+        os.environ.setdefault('SESSION_SECRET', 'ahmed-helly-educational-platform-production-key-2025')
+        os.environ.setdefault('DATABASE_URL', '')  # Will use SQLite fallback
+        
+        # Import Flask app and initialize database
         from main import app
+        from app import db
+        
+        # Create tables and add sample data for production
+        with app.app_context():
+            db.create_all()
+            
+            # Initialize with existing users if available
+            try:
+                from models import User
+                admin_user = User.query.filter_by(username='admin').first()
+            except:
+                # Database may not exist yet, will be created automatically
+                pass
         
         # Create test client
         with app.test_client() as client:
@@ -53,7 +70,7 @@ def main():
             
             result['headers'] = clean_headers
             
-            print(json.dumps(result))
+            print(json.dumps(result, ensure_ascii=False))
             
     except Exception as e:
         # Error response
