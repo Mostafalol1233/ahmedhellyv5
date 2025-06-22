@@ -17,4 +17,7 @@
 
 [functions]
   directory = "netlify/functions"
-  python_version = "3.11"
+
+[functions."app"]
+  runtime = "python3.11"
+  included_files = ["**/*.py", "requirements.txt", "static/**", "templates/**", "instance/**"]
