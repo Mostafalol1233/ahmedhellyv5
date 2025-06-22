@@ -22,8 +22,7 @@ db = SQLAlchemy(model_class=Base)
 app.secret_key = os.environ.get("SESSION_SECRET", "ahmed-helly-educational-platform-secret-key")
 
 # تكوين قاعدة البيانات
-# استخدام رابط محدد بشكل مباشر لقاعدة بيانات PostgreSQL
-DATABASE_URL = "postgresql://neondb_owner:npg_ClcIa2kJ6KUY@ep-lively-mountain-a42ezf7w-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require"
+DATABASE_URL = os.environ.get("DATABASE_URL")
 
 if DATABASE_URL:
     logging.info("استخدام قاعدة بيانات PostgreSQL")

@@ -2,19 +2,34 @@
   "version": 2,
   "builds": [
     {
-      "src": "main.py",
+      "src": "api/index.py",
       "use": "@vercel/python"
+    },
+    {
+      "src": "static/**",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
     {
+      "src": "/static/(.*)",
+      "dest": "/static/$1"
+    },
+    {
+      "src": "/favicon.ico",
+      "dest": "/static/favicon.ico"
+    },
+    {
       "src": "/(.*)",
-      "dest": "/main.py"
+      "dest": "/api/index.py"
     }
   ],
+  "functions": {
+    "api/index.py": {
+      "maxDuration": 30
+    }
+  },
   "env": {
-    "SESSION_SECRET": "ahmed-helly-educational-platform-secret-key",
-    "DATABASE_URL": "postgresql://neondb_owner:npg_ClcIa2kJ6KUY@ep-lively-mountain-a42ezf7w-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require",
     "PYTHON_VERSION": "3.11"
   }
 }

@@ -30,3 +30,4 @@ openai
 mangum
 flask-login
 flask-wtf
+asgiref

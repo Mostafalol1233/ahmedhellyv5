@@ -1,0 +1,51 @@
+{
+  "name": "Ahmed Helly Educational Platform",
+  "description": "A comprehensive educational platform with video content, tests, messaging, and payment integration",
+  "repository": "https://github.com/your-repo/educational-platform",
+  "keywords": ["flask", "education", "python", "postgresql"],
+  "env": {
+    "SESSION_SECRET": {
+      "description": "A secret key for session management",
+      "generator": "secret"
+    },
+    "DATABASE_URL": {
+      "description": "PostgreSQL database URL",
+      "required": true
+    },
+    "OPENAI_API_KEY": {
+      "description": "OpenAI API key for AI chat features (optional)",
+      "required": false
+    },
+    "STRIPE_SECRET_KEY": {
+      "description": "Stripe secret key for payments (optional)",
+      "required": false
+    },
+    "STRIPE_PUBLISHABLE_KEY": {
+      "description": "Stripe publishable key for payments (optional)",
+      "required": false
+    },
+    "TWILIO_ACCOUNT_SID": {
+      "description": "Twilio Account SID for SMS (optional)",
+      "required": false
+    },
+    "TWILIO_AUTH_TOKEN": {
+      "description": "Twilio Auth Token for SMS (optional)",
+      "required": false
+    },
+    "TWILIO_PHONE_NUMBER": {
+      "description": "Twilio Phone Number for SMS (optional)",
+      "required": false
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "basic"
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "heroku/python"
+    }
+  ]
+}

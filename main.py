@@ -10,7 +10,7 @@ csrf = CSRFProtect(app)
 # Initialize login manager
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = 'main.login'
+login_manager.login_view = 'main.login'  # type: ignore
 
 # Error handlers
 @app.errorhandler(403)
@@ -81,6 +81,10 @@ with app.app_context():
 
 def check_if_first_run():
     """Check if this is the first run by checking if an indicator file exists"""
+    # Skip first run setup in production environments
+    if os.environ.get('VERCEL') or os.environ.get('NETLIFY'):
+        return
+        
     indicator_file = os.path.join(os.getcwd(), 'first_run_complete.txt')
     if not os.path.exists(indicator_file):
         try:
@@ -98,11 +102,14 @@ def check_if_first_run():
             logging.error(f"Error during first run setup: {str(e)}")
 
 if __name__ == "__main__":
-    check_if_first_run()
+    # Only run first run setup in development
+    if not (os.environ.get('VERCEL') or os.environ.get('NETLIFY')):
+        check_if_first_run()
 
+    port = int(os.environ.get('PORT', 5000))
     app.run(
         host='0.0.0.0',
-        port=5000,
-        debug=True,
+        port=port,
+        debug=not (os.environ.get('VERCEL') or os.environ.get('NETLIFY')),
         threaded=True
     )

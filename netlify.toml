@@ -1,10 +1,15 @@
 [build]
-  publish = "."
+  publish = "static"
   command = "pip install -r requirements.txt"
 
 [build.environment]
   PYTHON_VERSION = "3.11"
 
+[[redirects]]
+  from = "/static/*"
+  to = "/static/:splat"
+  status = 200
+  
 [[redirects]]
   from = "/*"
   to = "/.netlify/functions/app"
@@ -12,3 +17,4 @@
 
 [functions]
   directory = "netlify/functions"
+  python_version = "3.11"
