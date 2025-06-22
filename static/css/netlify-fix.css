@@ -1,0 +1,117 @@
+/* إصلاح واجهة Netlify */
+body {
+    font-family: 'Tajawal', 'Segoe UI', sans-serif !important;
+    direction: rtl !important;
+    text-align: right !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    min-height: 100vh;
+}
+
+.card {
+    border-radius: 15px !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2) !important;
+    border: none !important;
+}
+
+.card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    border-radius: 15px 15px 0 0 !important;
+    padding: 1.5rem !important;
+}
+
+.card-body {
+    padding: 2rem !important;
+    background: white !important;
+}
+
+.form-control {
+    border-radius: 8px !important;
+    border: 2px solid #e9ecef !important;
+    padding: 12px 15px !important;
+    font-size: 1rem !important;
+    transition: all 0.3s ease !important;
+}
+
+.form-control:focus {
+    border-color: #667eea !important;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25) !important;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 12px 30px !important;
+    font-weight: bold !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4) !important;
+}
+
+.alert {
+    border-radius: 8px !important;
+    border: none !important;
+    padding: 1rem 1.5rem !important;
+}
+
+.alert-success {
+    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%) !important;
+    color: white !important;
+}
+
+.alert-danger {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%) !important;
+    color: white !important;
+}
+
+.container {
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
+}
+
+.text-center {
+    text-align: center !important;
+}
+
+.text-end {
+    text-align: right !important;
+}
+
+.form-label {
+    font-weight: bold !important;
+    margin-bottom: 0.5rem !important;
+    color: #333 !important;
+}
+
+.text-danger {
+    color: #e74c3c !important;
+    font-size: 0.875rem !important;
+    margin-top: 0.25rem !important;
+}
+
+/* إصلاح مشكلة الشاشة البيضاء */
+.main-content {
+    min-height: 100vh !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* تحسين المظهر على الأجهزة المحمولة */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem !important;
+    }
+    
+    .card {
+        margin: 0.5rem !important;
+    }
+    
+    .card-body {
+        padding: 1.5rem !important;
+    }
+}
